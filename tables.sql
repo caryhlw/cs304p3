@@ -75,9 +75,6 @@ create table Customer
 	address varchar(50) not null,
 	phone integer not null);
 
-CREATE SEQUENCE customer_counter
-START WITH 100000
-
 create table Return
 	( retid integer not null PRIMARY KEY,
 	returnDate date not null,
