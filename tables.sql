@@ -2,7 +2,8 @@
  - Dependencies
  - Cascades
  - Some attributes probably don't need 'not null', 
- 	but I added them for now						*/
+ 	but I added them for now						
+*/
 
 create table Item 
 	( upc integer not null PRIMARY KEY,
@@ -13,6 +14,9 @@ create table Item
 	year integer not null,
 	sellPrice float not null,
 	quantity integer not null );
+
+CREATE SEQUENCE upc_counter
+START WITH 100000000000;
 
 create table LeadSinger
 	( upc integer not null,
@@ -30,6 +34,9 @@ create table Shipment
 	( sid integer not null PRIMARY KEY,	
 	supName varchar(50) not null,
 	date date not null );
+
+CREATE SEQUENCE shipment_counter
+START WITH 1000000
 
 create table ShipItem
 	( sid integer not null,
@@ -49,6 +56,9 @@ create table Purchase
 	expectedDate date not null,
 	deliveredDate date,
 	foreign key(cid) references Customer );
+
+CREATE SEQUENCE receipt_counter
+START WITH 10000000
 	
 create table PurchaseItem
 	( receiptID integer not null,
@@ -64,6 +74,9 @@ create table Customer
 	name varchar(50) not null,
 	address varchar(50) not null,
 	phone integer not null);
+
+CREATE SEQUENCE customer_counter
+START WITH 100000
 
 create table Return
 	( retid integer not null PRIMARY KEY,
