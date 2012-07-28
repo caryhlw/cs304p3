@@ -63,4 +63,18 @@ public class dbConnection {
 		}
 	}
 	
+	private boolean Disconnect()  {
+		try {
+			con.close();
+			System.out.println("\nConnection closed. Bye for now!\n\n");
+			return true;
+		}
+		catch(SQLException e)
+		{
+			System.out.println("Message: " + e.getMessage());
+			return false;
+		}
+	
+	}
+	
 }
