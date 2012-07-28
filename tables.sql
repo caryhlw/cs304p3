@@ -18,11 +18,12 @@ create table Item
 CREATE SEQUENCE upc_counter
 START WITH 100000000000;
 
-create table LeadSinger
+create table LeadSinger //1
 	( upc integer not null,
 	name varchar(50) not null,
 	PRIMARY KEY (upc, name),
-	foreign key (upc) references Item );
+	foreign key (upc) references Item ),
+		ON DELETE CASCADE;
 	
 create table HasSong
 	( upc integer not null,
