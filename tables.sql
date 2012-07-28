@@ -51,10 +51,10 @@ create table ShipItem
 create table Purchase
 	( receiptID integer not null PRIMARY KEY,
 	purchaseDate date not null,
-	cid integer not null,
-	card# integer not null,
-	expire date not null,
-	expectedDate date not null,
+	cid integer,
+	card# integer,
+	expire date,
+	expectedDate date,
 	deliveredDate date,
 	foreign key(cid) references Customer );
 
