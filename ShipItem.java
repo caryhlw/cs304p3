@@ -13,4 +13,19 @@ public class ShipItem {
 	{
 	sid = this.sid;
 	upc = this.upc;
-	};
+	}
+
+	
+	int getSid(){
+		return sid;
+	}
+	int getUPC(){
+		return upc;
+	}
+	int getSupPrice(){
+		return supPrice;
+	}
+	int getQuantity(){
+		return quantity;
+	}
+}
