@@ -17,7 +17,15 @@ public class HasSong{
     public HasSong( int upc, String title){
     	
     	upc = this.upc;
+    	title = this.title;
     	
+    }
+    
+    int getUPC() {
+    	return upc;
+    }
+    String getTitle(){
+    	return title;
     }
 	
 }
