@@ -162,31 +162,31 @@ public class Purchase {
         }
     }
 
-    public int receiptId() {
+    public int getReceiptId() {
         return receiptId;
     }
 
-    public String date() {
+    public String getDate() {
         return date;
     }
 
-    public int cardnum() {
+    public int getCardnum() {
         return cardnum;
     }
 
-    public int expiry() {
+    public int getExpiry() {
         return expiry;
     }
 
-    public String expectedDate() {
+    public String getExpectedDate() {
         return expectedDate;
     }
 
-    public String deliveredDate() {
+    public String getDeliveredDate() {
         return deliveredDate;
     }
 
-    public ArrayList getPurchaseItemUPC() {
-        return new ArrayList();
+    public ArrayList getPurchaseItems() {
+        return this.purchaseItems;
     }
 }
