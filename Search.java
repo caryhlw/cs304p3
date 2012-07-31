@@ -107,12 +107,13 @@ public class Search {
 		    }
 		}
 	}
-	void searchLeadSing(){
+	void searchLeadSinger(){
 		try{
-		ps = con.prepareStatement("SELECT upc, title, type, company, year, sellPrice"
+		ps = con.prepareStatement("SELECT upc"
 				+"FROM Item I, LeadingSinger L"
 				+"WHERE I.upc = L.upc AND L.name = ?");
 		sTerm = in.readLine();
+		//sTerm = search Term
 		if (sTerm.length() == 0)
         {
 	      ps.setString(1, null);
@@ -121,7 +122,13 @@ public class Search {
 	  {
 	      ps.setString(1, sTerm);
 	  }
-		ps.executeUpdate();
+		rs = ps.executeQuery();
+
+		while( rs.next() ){
+			
+			retItem.add(Item I(con,rs.getInt(1)));
+		}
+		
 
 		  // commit work 
 		  con.commit();
