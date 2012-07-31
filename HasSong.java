@@ -11,10 +11,34 @@ public class HasSong{
 	
 	private String title;
 	
+	private Statement stmt;
+    private ResultSet rs;
     
     public HasSong( int upc, String title){
     	
-    	upc = this.upc;
+    	try{
+    		Connection con = DriverManager.getConnection(
+                    "jdbc:oracle:thin:@dbhost.ugrad.cs.ubc.ca:1521:ug",
+                    "username",
+                    "password");
+            stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT upc"
+                    + "FROM item"
+                    + "WHERE upc = " + upc + ";");
+            
+            if (rs.next() == true)
+            {
+                upc = this.upc;
+                title = this.title;
+            }
+            
+        
+    	}
+    	
+    	catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
     	title = this.title;
     	
     }
