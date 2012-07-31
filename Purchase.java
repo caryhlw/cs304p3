@@ -106,6 +106,51 @@ public class Purchase {
         }
     }
 
+    public void removeItem(Item item) {
+        try
+        {
+            stmt = con.createStatement();
+            stmt.executeUpdate("Update PurchaseItem"
+                    + "SET quantity = quantity + - 1"
+                    + "WHERE receiptId = " + receiptId + ", upc = " + item.getUPC() + ";");
+            Object purchaseItems[] = this.purchaseItems.toArray();
+            for (int i = 0; i < this.purchaseItems.size(); i++)
+            {
+                if (((Item) purchaseItems[i]).getUPC() == item.getUPC())
+                {
+                    this.purchaseItems.remove(i);
+                }
+            }
+            this.subtotal = subtotal;
+        } catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
+    }
+
+    private void calculateSubtotal() {
+        float subtotal = 0;
+        Object purchaseItems[] = this.purchaseItems.toArray();
+        for (int i = 0; i < this.purchaseItems.size(); i++)
+        {
+            subtotal = +((Item) purchaseItems[i]).getSellPrice();
+        }
+        this.subtotal = subtotal;
+    }
+
+    public void Cancel() {
+        try
+        {
+            stmt.executeUpdate("DELETE FROM PurchaseItem"
+                    + "WHERE receiptID = " + receiptId + ";");
+            stmt.executeUpdate("DELECTE FROM Purchase"
+                    + "WHERE receiptID = " + receiptId + ";");
+        } catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
+    }
+
     public int receiptId() {
         return receiptId;
     }
@@ -141,30 +186,7 @@ public class Purchase {
         }
     }
 
-    private void calculateSubtotal() {
-        float subtotal = 0;
-        Object purchaseItems[] = this.purchaseItems.toArray();
-        for (int i = 0; i < this.purchaseItems.size(); i++)
-        {
-            subtotal = +((Item) purchaseItems[i]).getSellPrice();
-        }
-        this.subtotal = subtotal;
-    }
-
     public ArrayList getPurchaseItemUPC() {
         return new ArrayList();
-    }
-
-    public void Cancel() {
-        try
-        {
-            stmt.executeUpdate("DELETE FROM PurchaseItem"
-                    + "WHERE receiptID = " + receiptId + ";");
-            stmt.executeUpdate("DELECTE FROM Purchase"
-                    + "WHERE receiptID = " + receiptId + ";");
-        } catch (SQLException ex)
-        {
-            System.out.println("Message: " + ex.getMessage());
-        }
     }
 }
