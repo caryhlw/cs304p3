@@ -6,9 +6,7 @@ public class Search
 {
 
     private ArrayList<Item> retItem;
-    private String sTerm;
     private Connection con;
-    private Statement stmt;
     private ResultSet rs;
     private PreparedStatement ps;
 
@@ -16,11 +14,10 @@ public class Search
     {
         retItem = new ArrayList<Item>(0);
         this.con = con;
-        sTerm = null;
 
     }
 
-    void searchTitle(String title)
+    public void searchTitle(String title)
     {
         try
         {
@@ -34,7 +31,7 @@ public class Search
                 ps.setString(1, null);
             } else
             {
-                ps.setString(1, sTerm);
+                ps.setString(1, title);
             }
             rs = ps.executeQuery();
 
@@ -63,21 +60,20 @@ public class Search
         }
     }
 
-    void searchCategory()
+   public void searchCategory(String category)
     {
         try
         {
             ps = con.prepareStatement("SELECT upc"
                     + "FROM Item"
                     + "WHERE category = ?");
-            sTerm = in.readLine();
-            //sTerm = search Term
-            if (sTerm.length() == 0)
+        
+            if (category.length() == 0)
             {
                 ps.setString(1, null);
             } else
             {
-                ps.setString(1, sTerm);
+                ps.setString(1, category);
             }
             rs = ps.executeQuery();
 
@@ -106,21 +102,20 @@ public class Search
         }
     }
 
-    void searchLeadSinger()
+   public void searchLeadSinger(String LeadingSinger)
     {
         try
         {
             ps = con.prepareStatement("SELECT upc"
                     + "FROM Item I, LeadingSinger L"
                     + "WHERE I.upc = L.upc AND L.name = ?");
-            sTerm = in.readLine();
-            //sTerm = search Term
-            if (sTerm.length() == 0)
+
+            if (LeadingSinger.length() == 0)
             {
                 ps.setString(1, null);
             } else
             {
-                ps.setString(1, sTerm);
+                ps.setString(1, LeadingSinger);
             }
             rs = ps.executeQuery();
 
@@ -150,7 +145,7 @@ public class Search
         }
     }
 
-    Item results(int index)
+    public Item results(int index)
     {
         return retItem.get(index);
     }
