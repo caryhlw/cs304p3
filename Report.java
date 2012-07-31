@@ -4,16 +4,16 @@ import java.io.*;
 public class Report {
 
 	private Date reportDate;
-	private int upc;
+	private String upc;
 	private String category;
-	private float sellPrice;
-	private int quantity;
-	private float totalValue;
+	private String sellPrice;
+	private String quantity;
+	private String totalValue;
 	
 	private String title;
 	private String company;
-	private int stock;
-	private int quantitySold;
+	private String stock;
+	private String quantitySold;
 	
 	private Connection con;
 	private PreparedStatement getReport = null;
@@ -48,23 +48,22 @@ public class Report {
 	public void printReport(Date d) {
 		try {
 			System.out.println(d);
-			String reportString = "SELECT I.upc, I.category, I.sellPrice, P.quantity FROM  Item I, PurchaseItem P, Purchase WHERE Purchase.purchaseDate = ? AND " +
-											"Purchase.receiptID = P.receiptID AND P.upc = I.upc";// +
-											//"GROUP BY I.category" +
-											//"SORT BY I.category;";
+			String reportString = "SELECT I.upc, I.category, I.sellPrice, P.quantity FROM  Item I, PurchaseItem P, Purchase WHERE Purchase.purchaseDate = '23-jun-2011' AND " +
+											"Purchase.receiptID = P.receiptID AND P.upc = I.upc ORDER BY I.category"; 
+											
 			
 			getReport = con.prepareStatement(reportString);
-			getReport.setDate(1, d);
+			//getReport.setDate(1, d);
 			ResultSet rs = getReport.executeQuery();
 			
-			System.out.println(getReport.toString());
 			
 			while(rs.next()) {
-				upc = rs.getInt(1);
+				
+				upc = rs.getString(1);
 				category = rs.getString(2);
-				sellPrice = rs.getFloat(3);
-				quantity = rs.getInt(4);
-				totalValue = rs.getFloat(5);
+				sellPrice = rs.getString(3);
+				quantity = rs.getString(4);
+				totalValue = rs.getString(5);
 				System.out.println(upc + " " + category + " " + sellPrice + " " + quantity + " " + totalValue + "\n");
 			}
 			rs.close();
@@ -91,8 +90,8 @@ public class Report {
 		while(rs.next()){
 			title = rs.getString(1);
 			company = rs.getString(2);
-			quantity = rs.getInt(3);
-			quantitySold = rs.getInt(4);
+			stock = rs.getString(3);
+			quantitySold = rs.getString(4);
 			System.out.println(title + " " + company + " " + quantity + " " + quantitySold + "\n");
 			
 		}
