@@ -39,7 +39,6 @@ public class HasSong{
         {
             System.out.println("Message: " + ex.getMessage());
         }
-    	title = this.title;
     	
     }
     
