@@ -11,4 +11,15 @@ public class Shipment {
 	public Shipment (int sid)
 	{
 	sid = this.sid;
-	};
+	}
+
+	int getSid(){
+		return sid;
+	}
+	String getSupName(){
+		return supName;
+	}
+	String getSDate(){
+		return sdate;
+	}
+}
