@@ -6,25 +6,22 @@ public class LeadSinger {
 	private String name;
 	private Statement stmt;
 	private ResultSet rs;
+	private Connection con;
 	
-	public LeadSinger (int upc, String name)
+	public LeadSinger (Connection con, int upc, String name)
 	{
-	
+		this.con = con;
 		try
         {
-			Connection con = DriverManager.getConnection(
-                    "jdbc:oracle:thin:@dbhost.ugrad.cs.ubc.ca:1521:ug",
-                    "username",
-                    "password");
-            stmt = con.createStatement();
+			stmt = con.createStatement();
             rs = stmt.executeQuery("SELECT upc"
                     + "FROM item"
                     + "WHERE upc = " + upc + ";");
-            
+            //check if upc exist
             if (rs.next() == true)
             {
-                upc = this.upc;
-                name = this.name;
+                this.upc = upc;
+                this.name = name;
             }
             
         
