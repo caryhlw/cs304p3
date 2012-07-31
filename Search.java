@@ -20,7 +20,8 @@ public class Search {
 	
 	void searchTitle(){
 		try{
-		ps = con.prepareStatement("SELECT upc, type, category, company, year, sellPrice"
+			
+		ps = con.prepareStatement("SELECT upc "
 				+"FROM Item"
 				+"WHERE title = ?");
 		sTerm = in.readLine();
@@ -32,8 +33,13 @@ public class Search {
 	  {
 	      ps.setString(1, sTerm);
 	  }
-		ps.executeUpdate();
+		rs = ps.executeQuery();
 
+		while( rs.next() ){
+			
+			retItem.add(Item I(con,rs.getInt(1)));
+		}
+		
 		  // commit work 
 		  con.commit();
 
