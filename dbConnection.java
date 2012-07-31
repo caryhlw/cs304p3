@@ -11,9 +11,11 @@ public class dbConnection {
 	public static void main(String args[])
 	{
 		dbConnection c = new dbConnection();
+		Report r = new Report(con);
+		r.printReport(new Date(111, 5, 23));
 	}
 
-	private java.sql.Connection con;
+	private static java.sql.Connection con;
 	private String username;
 	private String password;
 	private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
