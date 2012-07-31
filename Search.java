@@ -1,9 +1,10 @@
 import java.sql.*;
 import java.util.ArrayList;
 
+
 public class Search {
 	
-	private ArrayList retItem;
+	private ArrayList <Item> retItem;
 	private String sTerm;
 	private Connection con;
 	
@@ -12,7 +13,7 @@ public class Search {
 	private PreparedStatement  ps;
 	
 	public Search(Connection con){
-		retItem = new ArrayList(0);
+		retItem = new ArrayList<Item>(0);
 		this.con = con;
 		sTerm = null;
 		
@@ -38,7 +39,7 @@ public class Search {
 
 		while( rs.next() ){
 			
-			retItem.add(Item I(con,rs.getInt(1)));
+			retItem.add(new Item(con,rs.getInt(1)));
 		}
 		
 		  // commit work 
@@ -83,7 +84,7 @@ public class Search {
 
 		while( rs.next() ){
 			
-			retItem.add(Item I(con,rs.getInt(1)));
+			retItem.add(new Item (con,rs.getInt(1)));
 		}
 		
 		  // commit work 
@@ -126,7 +127,7 @@ public class Search {
 
 		while( rs.next() ){
 			
-			retItem.add(Item I(con,rs.getInt(1)));
+			retItem.add(new Item(con,rs.getInt(1)));
 		}
 		
 
@@ -150,5 +151,8 @@ public class Search {
 			System.exit(-1);
 		    }
 		}
+	}
+	Item results(int index){
+		return retItem.get(index);
 	}
 }
