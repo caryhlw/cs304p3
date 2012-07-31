@@ -2,8 +2,7 @@
 import java.sql.*;
 import java.util.ArrayList;
 
-public class Purchase
-{
+public class Purchase {
 
     private ArrayList purchaseItems;
     private int receiptId;
@@ -17,16 +16,27 @@ public class Purchase
     private ResultSet rs;
     private Connection con;
 
-    public Purchase(Connection con)
-    {
+    public Purchase(Connection con) {
         //fetchReceiptID
         //getCurrentDate
         this.con = con;
         this.purchaseItems = new ArrayList();
+        this.date = null; //getSystemDate
+        try
+        {
+            stmt = con.createStatement();
+            stmt.executeUpdate("insert into Purchase values"
+                    + "receipt_counter.nextval, " + this.date + ", null, null, null, null, null");
+            rs = stmt.executeQuery("SELECT receiptId"
+                    + "FROM Purchase"
+                    + "WHERE receiptID = receipt_counter.currval");
+        } catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
     }
 
-    public Purchase(Connection con, int receiptId)
-    {
+    public Purchase(Connection con, int receiptId) {
         this.purchaseItems = new ArrayList();
 
         try
@@ -63,8 +73,7 @@ public class Purchase
         }
     }
 
-    public void addItem(int upc)
-    {
+    public void addItem(int upc) {
         try
         {
             Item Item = new Item(con, upc);
@@ -97,38 +106,31 @@ public class Purchase
         }
     }
 
-    public int receiptId()
-    {
+    public int receiptId() {
         return receiptId;
     }
 
-    public String date()
-    {
+    public String date() {
         return date;
     }
 
-    public int cardnum()
-    {
+    public int cardnum() {
         return cardnum;
     }
 
-    public int expiry()
-    {
+    public int expiry() {
         return expiry;
     }
 
-    public String expectedDate()
-    {
+    public String expectedDate() {
         return expectedDate;
     }
 
-    public String deliveredDate()
-    {
+    public String deliveredDate() {
         return deliveredDate;
     }
 
-    private boolean checkStock(Item pi, int purchaseQuantity)
-    {
+    private boolean checkStock(Item pi, int purchaseQuantity) {
         int stock = pi.getQuantity();
         if (stock > purchaseQuantity)
         {
@@ -139,8 +141,7 @@ public class Purchase
         }
     }
 
-    private void calculateSubtotal()
-    {
+    private void calculateSubtotal() {
         float subtotal = 0;
         Object purchaseItems[] = this.purchaseItems.toArray();
         for (int i = 0; i < this.purchaseItems.size(); i++)
@@ -150,8 +151,20 @@ public class Purchase
         this.subtotal = subtotal;
     }
 
-    public ArrayList getPurchaseItemUPC()
-    {
+    public ArrayList getPurchaseItemUPC() {
         return new ArrayList();
+    }
+
+    public void Cancel() {
+        try
+        {
+            stmt.executeUpdate("DELETE FROM PurchaseItem"
+                    + "WHERE receiptID = " + receiptId + ";");
+            stmt.executeUpdate("DELECTE FROM Purchase"
+                    + "WHERE receiptID = " + receiptId + ";");
+        } catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
     }
 }
