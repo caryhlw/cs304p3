@@ -55,4 +55,80 @@ public class Search {
 		    }
 		}
 	}
+	
+	
+	void searchCategory(){
+		try{
+		ps = con.prepareStatement("SELECT upc, title, type, company, year, sellPrice"
+				+"FROM Item"
+				+"WHERE category = ?");
+		sTerm = in.readLine();
+		if (sTerm.length() == 0)
+        {
+	      ps.setString(1, null);
+	  }
+	  else
+	  {
+	      ps.setString(1, sTerm);
+	  }
+		ps.executeUpdate();
+
+		  // commit work 
+		  con.commit();
+
+		  ps.close();
+		}
+		
+		catch (SQLException ex)
+		{
+		    System.out.println("Message: " + ex.getMessage());
+		    try 
+		    {
+			// undo the insert
+			con.rollback();	
+		    }
+		    catch (SQLException ex2)
+		    {
+			System.out.println("Message: " + ex2.getMessage());
+			System.exit(-1);
+		    }
+		}
+	}
+	void searchLeadSing(){
+		try{
+		ps = con.prepareStatement("SELECT upc, title, type, company, year, sellPrice"
+				+"FROM Item I, LeadingSinger L"
+				+"WHERE I.upc = L.upc AND L.name = ?");
+		sTerm = in.readLine();
+		if (sTerm.length() == 0)
+        {
+	      ps.setString(1, null);
+	  }
+	  else
+	  {
+	      ps.setString(1, sTerm);
+	  }
+		ps.executeUpdate();
+
+		  // commit work 
+		  con.commit();
+
+		  ps.close();
+		}
+		
+		catch (SQLException ex)
+		{
+		    System.out.println("Message: " + ex.getMessage());
+		    try 
+		    {
+			// undo the insert
+			con.rollback();	
+		    }
+		    catch (SQLException ex2)
+		    {
+			System.out.println("Message: " + ex2.getMessage());
+			System.exit(-1);
+		    }
+		}
+	}
 }
