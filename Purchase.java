@@ -5,13 +5,13 @@ import java.util.ArrayList;
 public class Purchase {
 
     private ArrayList purchaseItems;
+    private float subtotal;
     private int receiptId;
     private String date;
     private int cardnum;
     private int expiry;
     private String expectedDate;
     private String deliveredDate;
-    private float subtotal;
     private Statement stmt;
     private ResultSet rs;
     private Connection con;
@@ -151,6 +151,17 @@ public class Purchase {
         }
     }
 
+    private boolean checkStock(Item pi, int purchaseQuantity) {
+        int stock = pi.getQuantity();
+        if (stock > purchaseQuantity)
+        {
+            return true;
+        } else
+        {
+            return false;
+        }
+    }
+
     public int receiptId() {
         return receiptId;
     }
@@ -173,17 +184,6 @@ public class Purchase {
 
     public String deliveredDate() {
         return deliveredDate;
-    }
-
-    private boolean checkStock(Item pi, int purchaseQuantity) {
-        int stock = pi.getQuantity();
-        if (stock > purchaseQuantity)
-        {
-            return true;
-        } else
-        {
-            return false;
-        }
     }
 
     public ArrayList getPurchaseItemUPC() {
