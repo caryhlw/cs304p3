@@ -1,15 +1,12 @@
+
 import java.sql.*;
+import java.util.ArrayList;
 
-        /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+public class Return
+{
 
-/**
- *
- * @author melstrom
- */
-public class Return {
+    private ArrayList returnItems;
+    private Purchase purchase;
     private int receiptId;
     private String date;
     private int cardnum;
@@ -18,27 +15,26 @@ public class Return {
     private ResultSet rs;
     private Connection con;
 
-    public Return (Connection con, int receiptId)
+    public Return(Connection con, int receiptId)
     {
+        this.purchase = new Purchase(con, receiptId);
+        this.returnItems = new ArrayList();
+
         try
         {
             stmt = con.createStatement();
-            stmt.executeQuery("BLAH BLAH"); //Find the receipt and return the information required
+            stmt.executeQuery("SELECT "); //Find the receipt and return the information required
 
             date = rs.getString();
             cardnum = rs.getInt();
             expiry = rs.getInt();
-        }
-
-        catch
-
+        } catch
         {
-
         }
     }
 
-    public void returnItem (int upc)
+    public void returnItem(int upc)
     {
-        //Searches for item and
+        if
     }
 }
