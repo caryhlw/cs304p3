@@ -4,40 +4,50 @@
  - Some attributes probably don't need 'not null', 
  	but I added them for now						
 */
+CREATE SEQUENCE upc_counter
+START WITH 100000;
+
+CREATE SEQUENCE receipt_counter
+START WITH 100000;
+
+CREATE SEQUENCE shipment_counter
+START WITH 1000000;
 
 create table Item 
 	( upc integer not null PRIMARY KEY,
-	title varchar(50) not null,
-	type varchar(20) not null,
-	category varchar(20) not null,
-	company varchar(50) not null,
+	title varchar(30) not null,
+	type varchar(3) not null,
+	category varchar(20),
+	company varchar(30) not null,
 	year integer not null,
 	sellPrice float not null,
 	quantity integer not null );
+	
+create table Customer
+	( cid integer not null PRIMARY KEY,
+	password varchar(25) not null, 
+	name varchar(30) not null,
+	address varchar(30) not null,
+	phone integer not null);
 
-CREATE SEQUENCE upc_counter
-START WITH 100000000000;
+create table Shipment
+	( sid integer not null PRIMARY KEY,	
+	supName varchar(30) not null,
+	sdate date not null );
 
-create table LeadSinger //1
+create table LeadSinger
 	( upc integer not null,
-	name varchar(50) not null,
+	name varchar(30) not null,
 	PRIMARY KEY (upc, name),
-	foreign key (upc) references Item ),
-		ON DELETE CASCADE;
+	foreign key (upc) references Item 
+		ON DELETE CASCADE );
 	
 create table HasSong
 	( upc integer not null,
-	title varchar(50) not null, 
+	title varchar(30) not null, 
 	PRIMARY KEY(upc, title),
 	foreign key(upc) references Item );
 	
-create table Shipment
-	( sid integer not null PRIMARY KEY,	
-	supName varchar(50) not null,
-	date date not null );
-
-CREATE SEQUENCE shipment_counter
-START WITH 1000000
 
 create table ShipItem
 	( sid integer not null,
@@ -57,9 +67,6 @@ create table Purchase
 	expectedDate date,
 	deliveredDate date,
 	foreign key(cid) references Customer );
-
-CREATE SEQUENCE receipt_counter
-START WITH 10000000
 	
 create table PurchaseItem
 	( receiptID integer not null,
@@ -67,22 +74,14 @@ create table PurchaseItem
 	quantity integer not null,
 	PRIMARY KEY(receiptID, upc),
 	foreign key(upc) references Item,
-	foregin key(receiptID) references Purchase );
-	
-create table Customer
-	( cid integer not null PRIMARY KEY,
-	password varchar(25) not null, 
-	name varchar(50) not null,
-	address varchar(50) not null,
-	phone integer not null);
+	foreign key(receiptID) references Purchase );
 
 create table Return
 	( retid integer not null PRIMARY KEY,
 	returnDate date not null,
 	receiptID integer not null,
-	name varchar(50) not null,
-	foreign key(receiptID) references Purchase,	
-	foreign key(name) references Customer );
+	name varchar(30) not null,
+	foreign key(receiptID) references Purchase );
 
 create table ReturnItem
 	( retid integer not null,
@@ -91,4 +90,45 @@ create table ReturnItem
 	PRIMARY KEY(retid, upc),
 	foreign key(retid) references Return,
 	foreign key(upc) references Item );
-	
+
+insert into Item	
+values (upc_counter.nextval, 'OK Computer', 'cd', 'rock', 'Capitol Records', 1997, 10.99, 1000);
+insert into LeadSinger
+values (upc_counter.currval, 'Thom Yorke');
+insert ALL
+into HasSong values (upc_counter.currval, 'Airbag')
+into HasSong values (upc_counter.currval, 'Paranoid Android')
+into HasSong values (upc_counter.currval, 'Subterranean Homesick Alien')
+into HasSong values (upc_counter.currval, 'Exit Music (For a Film)')
+into HasSong values (upc_counter.currval, 'Let Down')
+into HasSong values (upc_counter.currval, 'Karma Police')
+into HasSong values (upc_counter.currval, 'Fitter Happier')
+into HasSong values (upc_counter.currval, 'Electioneering')
+into HasSong values (upc_counter.currval, 'Climbing Up the Walls')
+into HasSong values (upc_counter.currval, 'No Surprises')
+into HasSong values (upc_counter.currval, 'Lucky')
+into HasSong values (upc_counter.currval, 'The Tourist')
+select * from dual;
+
+insert into Item
+values (upc_counter.nextval, 'Teenage Dream', 'cd', 'pop', 'Capitol Records', 2010, 6.99, 50);
+insert into LeadSinger
+values(upc_counter.currval, 'Katy Perry');
+
+insert ALL
+into HasSong values (upc_counter.currval, 'Teenage Dream')
+into HasSong values (upc_counter.currval, 'Last Friday Night (T.G.I.F.)')
+into HasSong values (upc_counter.currval, 'California Gurls')
+into HasSong values (upc_counter.currval, 'Firework')
+into HasSong values (upc_counter.currval, 'Peacock')
+into HasSong values (upc_counter.currval, 'Circle the Drain')
+into HasSong values (upc_counter.currval, 'The One That Got Away')
+into HasSong values (upc_counter.currval, 'Who Am I Living For?')
+into HasSong values (upc_counter.currval, 'Pearl')
+into HasSong values (upc_counter.currval, 'Hummingbird Heartbeat')
+into HasSong values (upc_counter.currval, 'Not Like the Movies')
+select * from dual;
+
+insert into Item
+values (upc_counter.nextval, 'Kill Bill: Vol. 1', 'dvd', null, 'Miramax Films', 2003, 9.99, 0);
+
