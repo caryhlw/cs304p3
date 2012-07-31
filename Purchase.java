@@ -33,7 +33,19 @@ public class Purchase
             rs = stmt.executeQuery("SELECT receiptId, date, cardnum, expiry, expectedDate, deliveredDate"
                     + "FROM Purchase"
                     + "WHERE receiptId = " + receiptId + ";");
-        } catch (SQLException ex)
+            if (rs.next() == true)
+            {
+                this.receiptId = rs.getInt(1);
+                this.date = rs.getDate(2);
+                this.cardnum = rs.getInt(3);
+                this.expiry = rs.getInt(4);
+                this.expectedDate = rs.getString(5);
+                this.deliveredDate = rs.getString(6);
+            }
+            else
+                throw new SQLException ("ReceiptId not found");
+        }
+        catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
         }
