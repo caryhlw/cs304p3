@@ -13,23 +13,21 @@ public class HasSong{
 	
 	private Statement stmt;
     private ResultSet rs;
+    private Connection con;
     
-    public HasSong( int upc, String title){
+    public HasSong(Connection con, int upc, String title){
     	
+    	this.con = con;
     	try{
-    		Connection con = DriverManager.getConnection(
-                    "jdbc:oracle:thin:@dbhost.ugrad.cs.ubc.ca:1521:ug",
-                    "username",
-                    "password");
             stmt = con.createStatement();
             rs = stmt.executeQuery("SELECT upc"
                     + "FROM Item"
                     + "WHERE upc = " + upc + ";");
-            
+          //check if upc exist
             if (rs.next() == true)
             {
-                upc = this.upc;
-                title = this.title;
+                this.upc = upc;
+                this.title = title;
             }
             
         
