@@ -12,8 +12,9 @@ public class Item {
 	private int quantity;
 	private Statement stmt;
 	private ResultSet rs;
+	private Connection con;
 	
-	public LeadSinger (int upc)
+	public Item (Connection con, int upc)
 	{
 	upc = this.upc;
 	
@@ -47,6 +48,23 @@ public class Item {
             System.out.println("Message: " + ex.getMessage());
         }
     }
+	
+	private void addItem()
+	
+	    {
+        try
+        {
+                             stmt = con.createStatement();
+                             stmt.executeUpdate("afdsafdslkjsadl"); //insert new item
+
+        }
+                   catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
+
+	
+	};
 int getUPC(){
 	return upc;
 	}
