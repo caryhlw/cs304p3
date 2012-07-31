@@ -23,7 +23,7 @@ public class HasSong{
                     "password");
             stmt = con.createStatement();
             rs = stmt.executeQuery("SELECT upc"
-                    + "FROM item"
+                    + "FROM Item"
                     + "WHERE upc = " + upc + ";");
             
             if (rs.next() == true)
