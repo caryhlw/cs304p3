@@ -17,14 +17,14 @@ public class Search
 
     }
 
-    public void searchTitle(String title)
+    public void searchTitle(String title, int quantity)
     {
         try
         {
 
             ps = con.prepareStatement("SELECT upc "
                     + "FROM Item"
-                    + "WHERE title = ?");
+                    + "WHERE title = ?" + "AND" + "quantity >= ?");
             //sTerm = search Term
             if (title.length() == 0)
             {
@@ -33,6 +33,8 @@ public class Search
             {
                 ps.setString(1, title);
             }
+            ps.setInt(2, quantity);
+            //maybe catch negative number exception
             rs = ps.executeQuery();
 
             while (rs.next())
@@ -60,13 +62,13 @@ public class Search
         }
     }
 
-   public void searchCategory(String category)
+   public void searchCategory(String category, int quantity)
     {
         try
         {
             ps = con.prepareStatement("SELECT upc"
                     + "FROM Item"
-                    + "WHERE category = ?");
+                    + "WHERE category = ?" + "AND" + "quantity = ?");
         
             if (category.length() == 0)
             {
@@ -75,6 +77,8 @@ public class Search
             {
                 ps.setString(1, category);
             }
+            ps.setInt(2, quantity);
+            
             rs = ps.executeQuery();
 
             while (rs.next())
@@ -102,13 +106,13 @@ public class Search
         }
     }
 
-   public void searchLeadSinger(String LeadingSinger)
+   public void searchLeadSinger(String LeadingSinger, int quantity)
     {
         try
         {
             ps = con.prepareStatement("SELECT upc"
                     + "FROM Item I, LeadingSinger L"
-                    + "WHERE I.upc = L.upc AND L.name = ?");
+                    + "WHERE I.upc = L.upc AND L.name = ?" + "AND"+"I.quantity = ?");
 
             if (LeadingSinger.length() == 0)
             {
@@ -117,6 +121,7 @@ public class Search
             {
                 ps.setString(1, LeadingSinger);
             }
+            ps.setInt(2, quantity);
             rs = ps.executeQuery();
 
             while (rs.next())
