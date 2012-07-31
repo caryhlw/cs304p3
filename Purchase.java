@@ -1,4 +1,3 @@
-
 import java.sql.*;
 import java.util.ArrayList;
 
@@ -35,18 +34,18 @@ public class Purchase {
                     + "WHERE receiptId = " + receiptId + ", upc = " + upc + ";");
             if (rs.next() == false)
             {
-                
+                if (checkStock(purchaseItem, 1) == true)
                 stmt.executeUpdate("insert into PurchaseItem values"
                         + "(" + receiptId + "," + upc + ", 1);");
                 purchaseItems.add(purchaseItem);
 
-            }
-            
-            else
+            } else
             {
-                //check if enough stock to add
-                //update the entry
-                            purchaseItems.add(purchaseItem);
+                if (checkStock(purchaseItem, rs.getInt(1)))
+                stmt.executeUpdate("Update PurchaseItem"
+                        + "SET quantity = quantity + 1"
+                        + "WHERE receiptId = " + receiptId + ", upc = " + upc + ";");
+                purchaseItems.add(purchaseItem);
 
             }
 
@@ -78,5 +77,13 @@ public class Purchase {
 
     public String deliveredDate() {
         return deliveredDate;
+    }
+
+    private boolean checkStock(PurchaseItem pi, int purchaseQuantity) {
+        int stock = pi.getQuantity();
+        if (stock > purchaseQuantity)
+            return true;
+        else
+            return false;
     }
 }
