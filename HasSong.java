@@ -11,8 +11,6 @@ public class HasSong{
 	
 	private String title;
 	
-    private Statement stmt;
-    private ResultSet rs;
     
     public HasSong( int upc, String title){
     	
