@@ -10,7 +10,7 @@ public class Shipment {
 	
 	public Shipment (int sid)
 	{
-	sid = this.sid;
+	this.sid = sid;
 	}
 
 	int getSid(){

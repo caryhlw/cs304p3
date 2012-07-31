@@ -8,11 +8,23 @@ public class ShipItem {
 	private int quantity;
 	private Statement stmt;
 	private ResultSet rs;
+	private Connection con;
 	
-	public ShipItem (int sid, int upc)
+	public ShipItem (Connection con, int sid, int upc)
 	{
-	sid = this.sid;
-	upc = this.upc;
+		try{
+			stmt = con.createStatement();
+            rs = stmt.executeQuery("SELECT upc"
+                    + "FROM Item"
+                    + "WHERE upc = " + upc + ";");
+		}
+		 if (rs.next() == true)
+         {
+			 this.con = con;
+				this.sid = sid;
+				this.upc = upc;
+         }
+		
 	}
 
 	
