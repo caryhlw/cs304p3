@@ -41,4 +41,16 @@ public class PurchaseItem {
             System.out.println("Message: " + ex.getMessage());
         }
     }
+    
+    public int getQuantity () {
+        return quantity;
+    }
+    
+    public int getPrice () {
+        return price;
+    }
+    
+    public String getName () {
+        return name;
+    }
 }
