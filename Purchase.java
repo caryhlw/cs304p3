@@ -27,6 +27,8 @@ public class Purchase
 
     public Purchase(Connection con, int receiptId)
     {
+        this.purchaseItems = new ArrayList();
+
         try
         {
             stmt = con.createStatement();
@@ -41,11 +43,21 @@ public class Purchase
                 this.expiry = rs.getInt(4);
                 this.expectedDate = rs.getString(5);
                 this.deliveredDate = rs.getString(6);
+                rs = stmt.executeQuery("SELECT upc, quantity"
+                        + "FROM PurchaseItem"
+                        + "WHERE receiptId = " + receiptId + ";");
+                while (rs.next())
+                {
+                    for (int i = 0; i < rs.getInt(2); i++)
+                    {
+                        purchaseItems.add(new Item(con, rs.getInt(1)));
+                    }
+                }
+            } else
+            {
+                throw new SQLException("ReceiptId not found");
             }
-            else
-                throw new SQLException ("ReceiptId not found");
-        }
-        catch (SQLException ex)
+        } catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
         }
@@ -136,5 +148,10 @@ public class Purchase
             subtotal = +((Item) purchaseItems[i]).getSellPrice();
         }
         this.subtotal = subtotal;
+    }
+
+    public ArrayList getPurchaseItemUPC()
+    {
+        return new ArrayList();
     }
 }
