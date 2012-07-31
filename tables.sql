@@ -4,10 +4,32 @@
  - Some attributes probably don't need 'not null', 
  	but I added them for now						
 */
+
+DROP SEQUENCE upc_counter;
+DROP SEQUENCE receipt_counter;
+DROP SEQUENCE retid_counter;
+DROP SEQUENCE shipment_counter;
+
+DROP TABLE HasSong;
+DROP TABLE LeadSinger;
+DROP TABLE PurchaseItem;
+DROP TABLE ShipItem;
+DROP TABLE ReturnItem;
+DROP TABLE Return;
+DROP TABLE Shipment;
+DROP TABLE Purchase;
+DROP TABLE Customer;
+DROP TABLE Item;
+
+
+
 CREATE SEQUENCE upc_counter
 START WITH 100000;
 
 CREATE SEQUENCE receipt_counter
+START WITH 100000;
+
+CREATE SEQUENCE retid_counter
 START WITH 100000;
 
 CREATE SEQUENCE shipment_counter
@@ -24,11 +46,11 @@ create table Item
 	quantity integer not null );
 	
 create table Customer
-	( cid integer not null PRIMARY KEY,
+	( cid varchar(30) not null PRIMARY KEY,
 	password varchar(25) not null, 
 	name varchar(30) not null,
 	address varchar(30) not null,
-	phone integer not null);
+	phone char(12) not null);
 
 create table Shipment
 	( sid integer not null PRIMARY KEY,	
@@ -61,7 +83,7 @@ create table ShipItem
 create table Purchase
 	( receiptID integer not null PRIMARY KEY,
 	purchaseDate date not null,
-	cid integer,
+	cid varchar(30),
 	card# integer,
 	expire date,
 	expectedDate date,
@@ -80,7 +102,7 @@ create table Return
 	( retid integer not null PRIMARY KEY,
 	returnDate date not null,
 	receiptID integer not null,
-	name varchar(30) not null,
+	name varchar(30) default 'Future Shop',
 	foreign key(receiptID) references Purchase );
 
 create table ReturnItem
@@ -90,6 +112,8 @@ create table ReturnItem
 	PRIMARY KEY(retid, upc),
 	foreign key(retid) references Return,
 	foreign key(upc) references Item );
+	
+
 
 insert into Item	
 values (upc_counter.nextval, 'OK Computer', 'cd', 'rock', 'Capitol Records', 1997, 10.99, 1000);
@@ -132,3 +156,23 @@ select * from dual;
 insert into Item
 values (upc_counter.nextval, 'Kill Bill: Vol. 1', 'dvd', null, 'Miramax Films', 2003, 9.99, 0);
 
+insert ALL
+into Customer values ('blau', 'abc123', 'Brandon Lau', '1428 Bramwell Road', '604-992-2219')
+into Customer values ('cwong', 'qwerty', 'Cary Wong', 'Somewhere in Kerrisdale', '604-123-4567')
+into Customer values ('bigfoig', 'itypeslow', 'Mike Estepho', 'Richmond?', '778-999-9999')
+into Customer values ('akon', 'solonely', 'Akom V', 'Richmond', '778-111-1111')
+select * from dual;
+
+
+insert into Purchase values (receipt_counter.nextval, '23-jun-2011', 'akon',
+							51911000, '1-jun-2013', null, null);
+
+insert into PurchaseItem values (receipt_counter.currval, 100000, 3);
+insert into PurchaseItem values (receipt_counter.currval, 100002, 1);
+
+insert into Return values (retid_counter.nextval, '29-jun-2011', receipt_counter.currval,
+							default);
+insert into ReturnItem values (retid_counter.currval, 100000, 2);
+
+insert into Shipment values (shipment_counter.nextval, 'Big Phat Records', '14-may-2010');
+insert into ShipItem values (shipment_counter.currval, 100000, 6.99, 100);
