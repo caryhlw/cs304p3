@@ -16,25 +16,32 @@ import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.JTextArea;
-import java.sql.*;
+
 
 public class CustomerLogin extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 	private JPasswordField passwordField;
-	private Connection con;
 
 	/**
 	 * Launch the application.
 	 */
-
+	public static void main(String[] args) {
+		try {
+			CustomerLogin dialog = new CustomerLogin();
+			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			dialog.setVisible(true);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public CustomerLogin(Connection connect) {
-		con = connect;
+	public CustomerLogin() {
 		setBounds(100, 100, 622, 470);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -75,6 +82,11 @@ public class CustomerLogin extends JDialog {
 			passwordField.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String password = textField.getText();
+					if(password.equals("hello")){
+						NewCustomerAccount frame = new NewCustomerAccount();
+						frame.setVisible(true);
+						setVisible(false);
+					}
 					
 				}
 			});
@@ -118,10 +130,8 @@ public class CustomerLogin extends JDialog {
 			btnSUBMIT.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 				
-					Customer c = new Customer(con, textField.getText(), passwordField.getText());
-					if(c.existingCustomer(c.getCustomerId())) {
-						System.out.println("Customer found!");
-					}
+				
+					
 				}
 			});
 			btnSUBMIT.setBounds(234, 241, 89, 23);
@@ -132,7 +142,7 @@ public class CustomerLogin extends JDialog {
 			JButton btnHOME = new JButton("HOME");
 			btnHOME.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					swing frame = new swing(con);
+					swing frame = new swing();
 					frame.setVisible(true);
 					setVisible(false);
 				}

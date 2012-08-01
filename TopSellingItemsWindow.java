@@ -5,11 +5,13 @@ import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.JLabel;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import javax.swing.JTextArea;
 
 
-public class ClerkWindow extends JDialog {
+public class TopSellingItemsWindow extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
 
@@ -18,7 +20,7 @@ public class ClerkWindow extends JDialog {
 	 */
 	public static void main(String[] args) {
 		try {
-			ClerkWindow dialog = new ClerkWindow();
+			TopSellingItemsWindow dialog = new TopSellingItemsWindow();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -29,47 +31,30 @@ public class ClerkWindow extends JDialog {
 	/**
 	 * Create the dialog.
 	 */
-	public ClerkWindow() {
+	public TopSellingItemsWindow() {
 		setBounds(100, 100, 622, 470);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
 		contentPanel.setLayout(null);
 		{
-			JButton btnProcessPurchase = new JButton("PROCESS PURCHASE");
-			btnProcessPurchase.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					ProcessPurchaseWindow frame = new ProcessPurchaseWindow();
-					frame.setVisible(true);
-					setVisible(false);
-				}
-			});
-			btnProcessPurchase.setBounds(82, 138, 170, 63);
-			contentPanel.add(btnProcessPurchase);
-		}
-		{
-			JButton btnProcessRefund = new JButton("PROCESS REFUND");
-			btnProcessRefund.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent e) {
-					ProcessRefundWindow frame = new ProcessRefundWindow();
-					frame.setVisible(true);
-					setVisible(false);
-				}
-			});
-			btnProcessRefund.setBounds(311, 138, 170, 63);
-			contentPanel.add(btnProcessRefund);
-		}
-		{
-			JButton btnHOME = new JButton("HOME");
-			btnHOME.addActionListener(new ActionListener() {
+			JButton btnHome = new JButton("HOME");
+			btnHome.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					swing frame = new swing();
 					frame.setVisible(true);
 					setVisible(false);
 				}
 			});
-			btnHOME.setBounds(10, 11, 89, 23);
-			contentPanel.add(btnHOME);
+			btnHome.setBounds(10, 11, 89, 23);
+			contentPanel.add(btnHome);
+		}
+		{
+			JTextArea txtrDailySalesReport = new JTextArea();
+			txtrDailySalesReport.setText("Top Selling Items");
+			txtrDailySalesReport.setEditable(false);
+			txtrDailySalesReport.setBounds(20, 45, 576, 366);
+			contentPanel.add(txtrDailySalesReport);
 		}
 		{
 			JPanel buttonPane = new JPanel();
