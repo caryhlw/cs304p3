@@ -32,14 +32,16 @@ public class Purchase
         try
         {
             ps = con.prepareStatement("INSERT INTO Purchase VALUES"
-                    + "(receipt_counter.nextval, ?, null, null, null, null, null");
+                    + "(receipt_counter.nextval, ?, null, null, null, null, null)");
             ps.setDate(1, dt);
-
-            stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT receiptId"
-                    + "FROM Purchase"
-                    + "WHERE receiptID = receipt_counter.currval");
+            ps.executeUpdate();
+            ps = con.prepareStatement("SELECT receipt_counter.currval " +
+            		"FROM dual");
+            rs = ps.executeQuery();
+            rs.next();
             this.receiptId = rs.getInt(1);
+            ps.close();
+            
         } catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
