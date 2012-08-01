@@ -47,8 +47,8 @@ public class Customer
     // the password matches the customerId, create a new Customer object with the information stored in the database.
     // Otherwise, throw a UserException.
     {
-
-        if (searchCust(customerId))
+    try {
+        if (existingCustomer(customerId))
         {
             String getPass = "select password from Customer where cid = ?";
             ps = con.prepareStatement(getPass);
@@ -74,7 +74,12 @@ public class Customer
         {
             throw new Exception("User does not exist");
         }
-
+    	} catch (SQLException e) {
+    		System.out.println("Message: " + e.getMessage());
+    		
+    	} catch (Exception ex) {
+    		System.out.println("Message: " + ex.getMessage());
+    	}
         //Find customer and see if password matches
     }
 
@@ -107,7 +112,7 @@ public class Customer
     {
         try
         {
-            String addCust = "insert into Customer values (?, ?, ?, ?, ?)"
+            String addCust = "insert into Customer values (?, ?, ?, ?, ?)";
         	ps = con.prepareStatement(addCust);
             ps.setInt(1, customerId);
             ps.setString(2, password);
@@ -148,6 +153,7 @@ public class Customer
         } catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
+            return true;
         }
 
     }
