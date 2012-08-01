@@ -107,6 +107,7 @@ public class Purchase
                 }
                 purchaseItems.add(Item);
             }
+            calculateSubtotal();
 
         } catch (SQLException ex)
         {
@@ -130,7 +131,7 @@ public class Purchase
                     this.purchaseItems.remove(i);
                 }
             }
-            this.subtotal = subtotal;
+            calculateSubtotal();
         } catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
@@ -179,7 +180,7 @@ public class Purchase
         return receiptId;
     }
 
-    public String getDate()
+    public Date getDate()
     {
         return date;
     }
