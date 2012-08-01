@@ -31,9 +31,9 @@ public class Item
         try
         {
             stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT upc, title, type, category, company, year, sellPrice, quantity"
-                    + "FROM item"
-                    + "WHERE upc = " + upc + ";");
+            rs = stmt.executeQuery("SELECT upc, title, type, category, company, year, sellPrice, quantity "
+                    + "FROM item "
+                    + "WHERE upc = " + upc);
             if (rs.next() == true)
             {
             this.upc = rs.getInt(1);
