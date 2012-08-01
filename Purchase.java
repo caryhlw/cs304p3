@@ -8,6 +8,7 @@ public class Purchase
 
     private ArrayList<Item> purchaseItems;
     private float subtotal;
+    private float change;
     private int receiptId;
     private Date date;
     private int cardnum;
@@ -32,13 +33,13 @@ public class Purchase
                     + "(receipt_counter.nextval, ?, null, null, null, null, null)");
             ps.setDate(1, dt);
             ps.executeUpdate();
-            ps = con.prepareStatement("SELECT receipt_counter.currval " +
-            		"FROM dual");
+            ps = con.prepareStatement("SELECT receipt_counter.currval "
+                    + "FROM dual");
             rs = ps.executeQuery();
             rs.next();
             this.receiptId = rs.getInt(1);
             ps.close();
-            
+
         } catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
@@ -65,12 +66,12 @@ public class Purchase
                 this.expiry = rs.getInt(4);
                 this.expectedDate = rs.getString(5);
                 this.deliveredDate = rs.getString(6);
-                ps = con.prepareStatement("SELECT upc, quantity " +
-                		"FROM PurchaseItem " +
-                		"WHERE receiptID = ?");
+                ps = con.prepareStatement("SELECT upc, quantity "
+                        + "FROM PurchaseItem "
+                        + "WHERE receiptID = ?");
                 ps.setInt(1, receiptId);
                 rs = ps.executeQuery();
-                
+
                 while (rs.next())
                 {
                     for (int i = 0; i < rs.getInt(2); i++)
@@ -138,7 +139,7 @@ public class Purchase
 
     public void removeItem(int upc)
     {
-    	Item item = new Item(con, upc);
+        Item item = new Item(con, upc);
         try
         {
             ps = con.prepareStatement("UPDATE PurchaseItem "
@@ -151,8 +152,10 @@ public class Purchase
 
             for (int i = 0; i < this.purchaseItems.size(); i++)
             {
-            	if (purchaseItems.get(i).getUPC() == item.getUPC())
-            			purchaseItems.remove(i);
+                if (purchaseItems.get(i).getUPC() == item.getUPC())
+                {
+                    purchaseItems.remove(i);
+                }
             }
             increaseStock(item);
             calculateSubtotal();
@@ -162,9 +165,22 @@ public class Purchase
         }
     }
 
-    public void checkout (int card, Date expire, int amount)
+    public void checkout(int card, Date expire, int amount)
     {
-        
+        long t = expire.getTime();
+        java.sql.Date dt = new java.sql.Date(t);
+        try
+        {
+            ps = con.prepareStatement("UPDATE Purchase "
+                    + "SET card# = ?, expire = ? "
+                    + "WHERE receiptID = ?");
+            ps.setInt(1, card);
+            ps.setDate(2, dt);
+            ps.setInt(3, receiptId);
+        } catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
     }
 
     private void calculateSubtotal()
@@ -172,9 +188,14 @@ public class Purchase
         float subtotal = 0;
         for (int i = 0; i < purchaseItems.size(); i++)
         {
-        	subtotal += purchaseItems.get(i).getSellPrice();
+            subtotal += purchaseItems.get(i).getSellPrice();
         }
         this.subtotal = subtotal;
+    }
+
+    private void calculateChange(int amount)
+    {
+        change = amount - subtotal;
     }
 
     protected void decreaseStock(Item item)
@@ -276,9 +297,9 @@ public class Purchase
     {
         return purchaseItems;
     }
-    
+
     public float getSubtotal()
     {
-    	return subtotal;
+        return subtotal;
     }
 }
