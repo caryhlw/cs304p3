@@ -142,13 +142,31 @@ public class Purchase
         Item item = new Item(con, upc);
         try
         {
-            ps = con.prepareStatement("UPDATE PurchaseItem "
-                    + "SET quantity = quantity - 1 "
+            ps = con.prepareStatement("SELECT quantity "
+                    + "FROM PurchaseItem "
                     + "WHERE receiptID = ? AND upc = ?");
-            ps.setInt(1, this.receiptId);
-            ps.setInt(2, item.getUPC());
-            ps.executeUpdate();
-            ps.close();
+            ps.setInt(1, receiptId);
+            ps.setInt(2, upc);
+            rs = ps.executeQuery();
+            rs.next();
+            if (rs.getInt(1) > 1)
+            {
+                ps = con.prepareStatement("UPDATE PurchaseItem "
+                        + "SET quantity = quantity - 1 "
+                        + "WHERE receiptID = ? AND upc = ?");
+                ps.setInt(1, this.receiptId);
+                ps.setInt(2, item.getUPC());
+                ps.executeUpdate();
+                ps.close();
+            } else
+            {
+                ps = con.prepareStatement("DELETE FROM PurchaseItem "
+                        + "WHERE receiptID = ? AND upc = ?");
+                ps.setInt(1, receiptId);
+                ps.setInt(2, upc);
+                ps.executeQuery();
+                ps.close();
+            }
 
             for (int i = 0; i < this.purchaseItems.size(); i++)
             {
