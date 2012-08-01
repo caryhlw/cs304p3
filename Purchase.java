@@ -2,12 +2,11 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
-import java.text.SimpleDateFormat;
 
 public class Purchase
 {
 
-    private ArrayList purchaseItems;
+    private ArrayList<Item> purchaseItems;
     private float subtotal;
     private int receiptId;
     private Date date;
@@ -22,10 +21,8 @@ public class Purchase
 
     public Purchase(Connection con)
     {
-        //fetchReceiptID
-        //getCurrentDate
         this.con = con;
-        this.purchaseItems = new ArrayList();
+        this.purchaseItems = new ArrayList<Item>();
         this.date = new Date();
         long t = date.getTime();
         java.sql.Date dt = new java.sql.Date(t);
@@ -50,7 +47,7 @@ public class Purchase
 
     public Purchase(Connection con, int receiptId)
     {
-        this.purchaseItems = new ArrayList();
+        this.purchaseItems = new ArrayList<Item>();
 
         try
         {
@@ -136,25 +133,23 @@ public class Purchase
         }
     }
 
-    public void removeItem(Item item)
+    public void removeItem(int upc)
     {
+    	Item item = new Item(con, upc);
         try
         {
             ps = con.prepareStatement("UPDATE PurchaseItem "
                     + "SET quantity = quantity - 1 "
-                    + "WHERE receiptID = ?, upc = ?");
+                    + "WHERE receiptID = ? AND upc = ?");
             ps.setInt(1, this.receiptId);
             ps.setInt(2, item.getUPC());
             ps.executeUpdate();
             ps.close();
 
-            Object purchaseItems[] = this.purchaseItems.toArray();
             for (int i = 0; i < this.purchaseItems.size(); i++)
             {
-                if (((Item) purchaseItems[i]).getUPC() == item.getUPC())
-                {
-                    this.purchaseItems.remove(i);
-                }
+            	if (purchaseItems.get(i).getUPC() == item.getUPC())
+            			purchaseItems.remove(i);
             }
             increaseStock(item);
             calculateSubtotal();
@@ -167,15 +162,9 @@ public class Purchase
     private void calculateSubtotal()
     {
         float subtotal = 0;
-//        Object purchaseItems[] = this.purchaseItems.toArray();
-//        for (int i = 0; i <= this.purchaseItems.size(); i++)
-//        {
-//            subtotal +=((Item) purchaseItems[i]).getSellPrice();
-//        }
-        
         for (int i = 0; i < purchaseItems.size(); i++)
         {
-        	subtotal += ((Item)purchaseItems.get(i)).getSellPrice();
+        	subtotal += purchaseItems.get(i).getSellPrice();
         }
         this.subtotal = subtotal;
     }
@@ -275,8 +264,13 @@ public class Purchase
         return deliveredDate;
     }
 
-    public ArrayList getPurchaseItems()
+    public ArrayList<Item> getPurchaseItems()
     {
-        return this.purchaseItems;
+        return purchaseItems;
+    }
+    
+    public float getSubtotal()
+    {
+    	return subtotal;
     }
 }
