@@ -70,6 +70,31 @@ public class Shipment
 	       }
 	}
 	
+	public void setSupName(String supName){
+		try{
+		this.supName = supName;
+		ps = con.prepareStatement("Update Into Shipment set supName = ?"
+				+ "WHERE sid = "+ sid);
+		ps.setString(1, supName);
+		ps.executeUpdate();
+		con.commit();
+		ps.close();
+		con.close();
+	}catch(SQLException ex) {
+        System.out.println("Message: " + ex.getMessage());
+        try
+        {
+            // undo the insert
+            con.rollback();
+        } catch (SQLException ex2)
+        {
+            System.out.println("Message: " + ex2.getMessage());
+            System.exit(-1);
+        }
+    	}
+		
+	}
+	
 	public int getSid()
     {
         return sid;
@@ -79,9 +104,9 @@ public class Shipment
         return supName;
     }
 
-    public String getSDate()
+    public Date getDate()
     {
-        return sdate;
+        return date;
     }
 }
 
