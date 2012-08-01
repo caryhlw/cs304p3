@@ -16,8 +16,6 @@ public class Return
     private ResultSet rs;
     private Connection con;
     private PreparedStatement ps;
-    
-
 
     public Return(Connection con, int receiptId)
     {
@@ -35,8 +33,8 @@ public class Return
             ps.setDate(1, dt);
             ps.setInt(2, this.purchase.getReceiptId());
             ps.executeUpdate();
-            ps = con.prepareStatement("SELECT retid_counter.currval " +
-            		"FROM dual");
+            ps = con.prepareStatement("SELECT retid_counter.currval "
+                    + "FROM dual");
             rs = ps.executeQuery();
             rs.next();
             this.retid = rs.getInt(1);
@@ -78,8 +76,8 @@ public class Return
                         {
                             ps = con.prepareStatement("UPDATE ReturnItem "
                                     + "SET quantity = quantity + 1 "
-                                    + "WHERE retid = ? AND" +
-                                    " upc = ?");
+                                    + "WHERE retid = ? AND"
+                                    + " upc = ?");
                             ps.setInt(1, retid);
                             ps.setInt(2, item.getUPC());
                             ps.executeUpdate();
@@ -107,17 +105,37 @@ public class Return
 
     }
 
-    public void removeItem(Item item)
+    public void removeItem(int upc)
     {
         try
         {
-            ps = con.prepareStatement("UPDATE ReturnItem "
-                    + "SET quantity = quantity - 1 "
+            Item item = new Item(con, upc);
+            ps = con.prepareStatement("SELECT quantity "
+                    + "FROM ReturnItem "
                     + "WHERE retid = ? AND upc = ?");
             ps.setInt(1, retid);
-            ps.setInt(2, item.getUPC());
-            ps.executeUpdate();
-            ps.close();
+            ps.setInt(2, upc);
+            rs = ps.executeQuery();
+            rs.next();
+            if (rs.getInt(1) > 1)
+            {
+                ps = con.prepareStatement("UPDATE ReturnItem "
+                        + "SET quantity = quantity - 1 "
+                        + "WHERE retid = ? AND upc = ?");
+                ps.setInt(1, retid);
+                ps.setInt(2, item.getUPC());
+                ps.executeUpdate();
+                ps.close();
+            }
+            else
+            {
+                ps = con.prepareStatement("DELETE FROM ReturnItem "
+                        + "WHERE retid = ? AND upc = ?");
+                ps.setInt(1, retid);
+                ps.setInt(2, upc);
+                ps.executeQuery();
+                ps.close();
+            }
             Object purchaseItems[] = this.returnItems.toArray();
 
             for (int i = 0; i < this.returnItems.size(); i++)
@@ -127,6 +145,7 @@ public class Return
                     this.returnItems.remove(i);
                 }
             }
+
             increaseStock(item);
             calculateSubtotal();
         } catch (SQLException ex)
@@ -135,7 +154,27 @@ public class Return
 
 
         }
+    }
 
+        public void Cancel()
+    {
+        try
+        {
+            ps = con.prepareStatement("DELETE FROM ReturnItem "
+                    + "WHERE retid = ?");
+            ps.setInt(1, retid);
+            ps.executeUpdate();
+            ps.close();
+
+            ps = con.prepareStatement("DELETE FROM Return "
+                    + "WHERE retid = ?");
+            ps.setInt(1, retid);
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
     }
 
     private void calculateSubtotal()
@@ -180,15 +219,14 @@ public class Return
             System.out.println("Message: " + ex.getMessage());
         }
     }
-    
+
     public ArrayList<Item> getReturnItems()
     {
-    	return returnItems;
+        return returnItems;
     }
-    
+
     public float getSubtotal()
     {
-    	return subtotal;
+        return subtotal;
     }
-   
 }
