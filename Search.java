@@ -148,7 +148,7 @@ public class Search
    {
        try
        {
-           ps = con.prepareStatement("SELECT upc FROM Item I, LeadingSinger L WHERE I.upc = L.upc AND L.name = ? AND I.quantity >= ? AND I.title = ? AND I.category = ?");
+           ps = con.prepareStatement("SELECT upc FROM Item I, LeadSinger L WHERE I.upc = L.upc AND L.name = ? AND I.quantity >= ? AND I.title = ? AND I.category = ?");
 
            if (LeadingSinger.length() == 0)
            {

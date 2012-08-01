@@ -7,29 +7,22 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
-
+import java.sql.*;
 
 public class ManagerWindow extends JDialog {
 
 	private final JPanel contentPanel = new JPanel();
+	private Connection con;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			ManagerWindow dialog = new ManagerWindow();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public ManagerWindow() {
+	public ManagerWindow(Connection c) {
+		con = c;
 		setBounds(100, 100, 622, 470);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -63,7 +56,7 @@ public class ManagerWindow extends JDialog {
 			JButton btnDailySalesReport = new JButton("Daily Sales Report");
 			btnDailySalesReport.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					DailySalesReportWindow frame = new DailySalesReportWindow();
+					DailySalesReportWindow frame = new DailySalesReportWindow(con);
 					frame.setVisible(true);
 					setVisible(false);
 				}
@@ -87,7 +80,7 @@ public class ManagerWindow extends JDialog {
 			JButton btnHome = new JButton("HOME");
 			btnHome.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					swing frame = new swing();
+					swing frame = new swing(con);
 					frame.setVisible(true);
 					setVisible(false);
 				}

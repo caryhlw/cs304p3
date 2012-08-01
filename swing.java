@@ -106,7 +106,7 @@ public class swing extends JFrame {
 		JButton btnManager = new JButton("Manager");
 		btnManager.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				ManagerWindow frame4 = new ManagerWindow();
+				ManagerWindow frame4 = new ManagerWindow(con);
 				frame4.setVisible(true);
 				setVisible(false);
 			}
