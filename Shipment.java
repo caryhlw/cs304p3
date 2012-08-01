@@ -10,7 +10,7 @@ public class Shipment
 	private int sid;
 	private String supName;
 	private Date date;
-	private ArrayList <int> shipItems;
+	private ArrayList<Item>shipItems;
 	private Connection con;
 	private Statement stmt;
 	private ResultSet rs;
@@ -21,8 +21,8 @@ public class Shipment
 		this.con = con;
 		this.sid = sid;
 		this.supName = supName;
-		shipItems = new ArrayList<int>(1);
-		shipItems.set(0, firstItemUPC);
+		shipItems = new ArrayList<Item>(0);
+		shipItems.add(new Item(con, firstItemUPC));
 		this.date = new Date();
         long t = date.getTime();
         java.sql.Date dt = new java.sql.Date(t);
@@ -40,34 +40,9 @@ public class Shipment
 	}
 	
 	public void addItem( int UPC ){
-		
-		try{
-		ps = con.prepareStatement("SELECT  title, type, category, company, year, sellPrice, quantity"
-				+ "FROM Item"
-				+ "WHERE upc = ?");
-		ps.setInt(1,UPC);
-		rs = ps.executeQuery();
-		while (rs.next())
-        {
 
-            retItem.add(new Item(con, rs.getInt(1)));
-        }
-		con.commit();
-
-        ps.close();
-		}catch (SQLException ex)
-	       {
-	           System.out.println("Message: " + ex.getMessage());
-	           try
-	           {
-	               // undo the insert
-	               con.rollback();
-	           } catch (SQLException ex2)
-	           {
-	               System.out.println("Message: " + ex2.getMessage());
-	               System.exit(-1);
-	           }
-	       }
+            shipItems.add(new Item(con, UPC));
+       
 	}
 	
 	public void setSupName(String supName){
@@ -93,6 +68,16 @@ public class Shipment
         }
     	}
 		
+	}
+	public float getPrice( int itemUPC){
+		for( int i = 0; i < shipItems.size(); i++){
+			if( shipItems.get(i).getUPC() == itemUPC ){
+				return shipItems.get(i).getSellPrice();
+			}
+			
+		}
+		System.out.println("Item doesn't exist in this shipment");
+		return 0.0f;
 	}
 	
 	public int getSid()
