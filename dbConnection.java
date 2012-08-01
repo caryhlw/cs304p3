@@ -11,9 +11,8 @@ public class dbConnection {
 	public static void main(String args[])
 	{
 		dbConnection c = new dbConnection();
-		Report r = new Report(con);
-		r.printReport(new Date(111, 5, 23));
-	}
+		swing gui = new swing(c.con);
+	} 
 
 	private static java.sql.Connection con;
 	private String username;
@@ -35,18 +34,18 @@ public class dbConnection {
 		System.exit(-1);
 	      }
 		
-		try {
+		//try {
 			while(!connected) {
-				System.out.println("\nEnter your Oracle username: ");
-				username = in.readLine();
-				System.out.println("\nEnter your Oracle password: ");
-				password = in.readLine();
-				if ( Connect(username, password) ) connected = true;
-			}
+			//	System.out.println("\nEnter your Oracle username: ");
+			//	username = in.readLine();
+			//	System.out.println("\nEnter your Oracle password: ");
+			//	password = in.readLine();
+				if ( Connect("ora_e8u7", "a62473087") ) connected = true;
+		//	}
 		}
-		catch(IOException ex) {
-			System.out.println(ex.getMessage());
-		}
+		//catch(IOException ex) {
+		//	System.out.println(ex.getMessage());
+		//}
 	}
 		
 	
@@ -56,7 +55,7 @@ public class dbConnection {
 		
 		try {
 			con = DriverManager.getConnection(connectURL, username, password);
-			System.out.println("\nSuccessfully Connected!");
+			System.out.println("\nSuccessfully Connected!\n\n");
 			return true;
 		}
 		catch(SQLException ex) {

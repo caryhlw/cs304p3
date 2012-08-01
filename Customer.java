@@ -52,6 +52,7 @@ public class Customer
             rs.next();
             String tempPass = rs.getString(1);
             System.out.println(tempPass);
+            System.out.println(password);
             if (!tempPass.equals(password))
             {
                 System.out.println("Incorrect password");
@@ -79,6 +80,10 @@ public class Customer
         //Find customer and see if password matches
     }
 
+    public String getCustomerId() {
+    	return customerId;
+    }
+    
     private void setCustomerId(String cid)
     {
         customerId = cid;
@@ -130,7 +135,7 @@ public class Customer
 
     }
 
-    private boolean existingCustomer(String cid)
+    public boolean existingCustomer(String cid)
     {
         // returns true if cid already exists in the database; otherwise returns false
         try

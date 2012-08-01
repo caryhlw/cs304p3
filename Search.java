@@ -22,9 +22,7 @@ public class Search
         try
         {
 
-            ps = con.prepareStatement("SELECT upc "
-                    + "FROM Item"
-                    + "WHERE title = ?" + "AND" + "quantity >= ?");
+            ps = con.prepareStatement("SELECT upc FROM Item WHERE title = ? AND quantity >= ?");
             //sTerm = search Term
             if (title.length() == 0)
             {

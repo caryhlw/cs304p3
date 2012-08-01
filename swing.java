@@ -22,7 +22,6 @@ import java.beans.PropertyChangeEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
-import com.jgoodies.forms.factories.DefaultComponentFactory;
 import javax.swing.JMenuItem;
 import javax.swing.JSlider;
 import java.awt.Button;
@@ -35,12 +34,14 @@ import java.awt.Label;
 import javax.swing.JRadioButton;
 import java.awt.Font;
 import javax.swing.SwingConstants;
+import java.sql.*;
 
 
 public class swing extends JFrame {
 	
 
 	private JPanel contentPane;
+	private Connection con;
 
 	/**
 	 * Launch the application.
@@ -65,7 +66,8 @@ public class swing extends JFrame {
 	/**
 	 * Create the frame.
 	 */
-	public swing() {
+	public swing(Connection connect) {
+		con = connect;
 		setVisible(true);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 622, 470);
@@ -77,15 +79,13 @@ public class swing extends JFrame {
 		JButton btnCustomer = new JButton("Customer");
 		btnCustomer.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		btnCustomer.addActionListener(new ActionListener() {
+			
 			public void actionPerformed(ActionEvent e) {
 				
-
-				CustomerLogin frame2 = new CustomerLogin();
+				CustomerLogin frame2 = new CustomerLogin(con);
 				frame2.setVisible(true);
 				setVisible(false);
 				
-
-
 			}
 		});
 
