@@ -16,6 +16,8 @@ public class ProcessPurchaseWindow extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField;
 	private JTextField textField_1;
+	private JTextField textField_2;
+	private JTextField textField_3;
 
 	/**
 	 * Launch the application.
@@ -53,7 +55,7 @@ public class ProcessPurchaseWindow extends JDialog {
 		{
 			textField_1 = new JTextField();
 			textField_1.setColumns(10);
-			textField_1.setBounds(310, 233, 86, 20);
+			textField_1.setBounds(310, 213, 86, 20);
 			contentPanel.add(textField_1);
 		}
 		{
@@ -63,7 +65,7 @@ public class ProcessPurchaseWindow extends JDialog {
 		}
 		{
 			JLabel lblQuantity = new JLabel("Quantity");
-			lblQuantity.setBounds(229, 236, 71, 14);
+			lblQuantity.setBounds(229, 216, 71, 14);
 			contentPanel.add(lblQuantity);
 		}
 		{
@@ -80,13 +82,35 @@ public class ProcessPurchaseWindow extends JDialog {
 		}
 		{
 			JButton btnSubmit = new JButton("SUBMIT");
-			btnSubmit.setBounds(310, 277, 89, 23);
+			btnSubmit.setBounds(307, 351, 89, 23);
 			contentPanel.add(btnSubmit);
 		}
 		{
 			JLabel lblProcessShipment = new JLabel("Process Purchase");
 			lblProcessShipment.setBounds(229, 51, 167, 14);
 			contentPanel.add(lblProcessShipment);
+		}
+		{
+			JLabel lblCc = new JLabel("CC #");
+			lblCc.setBounds(229, 250, 46, 14);
+			contentPanel.add(lblCc);
+		}
+		{
+			JLabel lblExpiryDate = new JLabel("Expiry Date");
+			lblExpiryDate.setBounds(229, 285, 71, 14);
+			contentPanel.add(lblExpiryDate);
+		}
+		{
+			textField_2 = new JTextField();
+			textField_2.setColumns(10);
+			textField_2.setBounds(310, 247, 86, 20);
+			contentPanel.add(textField_2);
+		}
+		{
+			textField_3 = new JTextField();
+			textField_3.setColumns(10);
+			textField_3.setBounds(310, 282, 86, 20);
+			contentPanel.add(textField_3);
 		}
 		{
 			JPanel buttonPane = new JPanel();
