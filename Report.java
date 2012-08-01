@@ -16,7 +16,7 @@ public class Report {
 	private String quantitySold;
 	
 	private Connection con;
-	private PreparedStatement getReport = null;
+	private PreparedStatement getReport;
 	
 	
 	private BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -47,18 +47,17 @@ public class Report {
 	
 	public void printReport(Date d) {
 		try {
-			System.out.println(d);
-			String reportString = "SELECT I.upc, I.category, I.sellPrice, P.quantity FROM  Item I, PurchaseItem P, Purchase WHERE Purchase.purchaseDate = '23-jun-2011' AND " +
+
+			String reportString = "SELECT I.upc, I.category, I.sellPrice, P.quantity, (I.sellPrice*P.quantity) FROM  Item I, PurchaseItem P, Purchase WHERE Purchase.purchaseDate = ? AND " +
 											"Purchase.receiptID = P.receiptID AND P.upc = I.upc ORDER BY I.category"; 
 											
-			
+
 			getReport = con.prepareStatement(reportString);
-			//getReport.setDate(1, d);
+			getReport.setDate(1, d);
 			ResultSet rs = getReport.executeQuery();
-			
-			
+
 			while(rs.next()) {
-				
+
 				upc = rs.getString(1);
 				category = rs.getString(2);
 				sellPrice = rs.getString(3);
@@ -76,15 +75,12 @@ public class Report {
 	
 	public void printTopSellers(Date d, int num) {
 	try {
-		String topString = "SELECT I.title, I.company, I.quantity, SUM(P.quantity) AS QuantitySold" +
-				"FROM Item I, PurchaseItem P, Purchase " +
-				"WHERE ROWNUM < ? AND Purchase.purchaseDate = ? AND Purchase.receiptID = P.receiptID AND P.upc = I.upc" +
-				"GROUP BY upc" +
-				"ORDER BY quantity_sold";
-		
+		String topString = "SELECT I.title, I.company, I.quantity, QuantitySold FROM (SELECT upc AS linkupc, " +
+				"sum(quantity) AS QuantitySold FROM (SELECT upc, PI.quantity FROM PurchaseItem PI, Purchase P WHERE P.purchaseDate = ? " +
+				"AND P.receiptID = PI.receiptID) GROUP BY upc ORDER BY QuantitySold desc) INNER JOIN Item I ON linkupc = I.upc WHERE ROWNUM < ?";
 		getReport = con.prepareStatement(topString);
-		getReport.setDate(2, d);
-		getReport.setInt(1, num);
+		getReport.setDate(1, d);
+		getReport.setInt(2, num+1);
 		ResultSet rs = getReport.executeQuery();
 		
 		while(rs.next()){
@@ -95,6 +91,10 @@ public class Report {
 			System.out.println(title + " " + company + " " + quantity + " " + quantitySold + "\n");
 			
 		}
+		
+		rs.close();
+		getReport.close();
+		
 	}
 	catch(SQLException e) {
 		System.out.println("Message: " + e.getMessage());
