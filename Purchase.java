@@ -18,6 +18,7 @@ public class Purchase
     private Statement stmt;
     private ResultSet rs;
     private Connection con;
+    private PreparedStatement ps;
 
     public Purchase(Connection con)
     {
@@ -30,12 +31,15 @@ public class Purchase
         java.sql.Date dt = new java.sql.Date(t);
         try
         {
+            ps = con.prepareStatement("INSERT INTO Purchase VALUES"
+                    + "(receipt_counter.nextval, ?, null, null, null, null, null");
+            ps.setDate(1, dt);
+
             stmt = con.createStatement();
-            stmt.executeUpdate("insert into Purchase values"
-                    + "receipt_counter.nextval, " + dt + ", null, null, null, null, null");
             rs = stmt.executeQuery("SELECT receiptId"
                     + "FROM Purchase"
                     + "WHERE receiptID = receipt_counter.currval");
+            this.receiptId = rs.getInt(1);
         } catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
@@ -48,10 +52,12 @@ public class Purchase
 
         try
         {
-            stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT receiptId, date, cardnum, expiry, expectedDate, deliveredDate"
-                    + "FROM Purchase"
-                    + "WHERE receiptId = " + receiptId + ";");
+            ps = con.prepareCall("SELECT receiptId, date, cardnum, expiry, expectedDate, deliveredDate"
+                    + "FROM Purchase "
+                    + "WHERE receiptID = ?");
+            ps.setInt(1, receiptId);
+            rs = ps.executeQuery();
+
             if (rs.next() == true)
             {
                 this.receiptId = rs.getInt(1);
@@ -85,27 +91,40 @@ public class Purchase
         try
         {
             Item Item = new Item(con, upc);
-            stmt = con.createStatement();
-            rs = stmt.executeQuery("SELECT quantity"
-                    + "FROM PurchaseItem"
-                    + "WHERE receiptId = " + receiptId + ", upc = " + upc + ";");
+            ps = con.prepareStatement("SELECT quantity "
+                    + "FROM PurchaseItem "
+                    + "WHERE receiptID = ?, upc = ?");
+            ps.setInt(1, this.receiptId);
+            ps.setInt(2, Item.getUPC());
+            rs = ps.executeQuery();
+
             if (rs.next() == false)
             {
                 if (checkStock(Item, 1) == true)
                 {
-                    stmt.executeUpdate("insert into PurchaseItem values"
-                            + "(" + receiptId + "," + upc + ", 1);");
+                    ps = con.prepareStatement("INSERT INTO PurchaseItem VALUES"
+                            + "(?, ?, 1");
+                    ps.setInt(1, this.receiptId);
+                    ps.setInt(2, Item.getUPC());
+                    ps.executeUpdate();
+                    ps.close();
+                    purchaseItems.add(Item);
+                    decreaseStock(Item);
                 }
-                purchaseItems.add(Item);
             } else
             {
                 if (checkStock(Item, rs.getInt(1)))
                 {
-                    stmt.executeUpdate("Update PurchaseItem"
-                            + "SET quantity = quantity + 1"
-                            + "WHERE receiptId = " + receiptId + ", upc = " + upc + ";");
+                    ps = con.prepareStatement("UPDATE PurchaseItem "
+                            + "SET quantity = quantity + 1 "
+                            + "WHERE receiptID = ?, upc = ?");
+                    ps.setInt(1, this.receiptId);
+                    ps.setInt(2, Item.getUPC());
+                    ps.executeUpdate();
+                    ps.close();
+                    purchaseItems.add(Item);
+                    decreaseStock(Item);
                 }
-                purchaseItems.add(Item);
             }
             calculateSubtotal();
 
@@ -119,10 +138,14 @@ public class Purchase
     {
         try
         {
-            stmt = con.createStatement();
-            stmt.executeUpdate("Update PurchaseItem"
-                    + "SET quantity = quantity + - 1"
-                    + "WHERE receiptId = " + receiptId + ", upc = " + item.getUPC() + ";");
+            ps = con.prepareStatement("UPDATE PurchaseItem "
+                    + "SET quantity = quantity - 1 "
+                    + "WHERE receiptID = ?, upc = ?");
+            ps.setInt(1, this.receiptId);
+            ps.setInt(2, item.getUPC());
+            ps.executeUpdate();
+            ps.close();
+
             Object purchaseItems[] = this.purchaseItems.toArray();
             for (int i = 0; i < this.purchaseItems.size(); i++)
             {
@@ -149,14 +172,53 @@ public class Purchase
         this.subtotal = subtotal;
     }
 
+    private void decreaseStock(Item item)
+    {
+        try
+        {
+            ps = con.prepareStatement("UPDATE Item "
+                    + "SET quantity = quantity - 1 "
+                    + "WHERE upc = ?");
+            ps.setInt(1, item.getUPC());
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
+    }
+
+    private void increaseStock(Item item)
+    {
+        try
+        {
+            ps = con.prepareStatement("UPDATE Item "
+                    + "SET quantity = quantity + 1 "
+                    + "WHERE upc = ?");
+            ps.setInt(1, item.getUPC());
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
+    }
+
     public void Cancel()
     {
         try
         {
-            stmt.executeUpdate("DELETE FROM PurchaseItem"
-                    + "WHERE receiptID = " + receiptId + ";");
-            stmt.executeUpdate("DELECTE FROM Purchase"
-                    + "WHERE receiptID = " + receiptId + ";");
+            ps = con.prepareStatement("DELETE FROM PurchaseItem "
+                    + "WHERE receiptID = ?");
+            ps.setInt(1, this.receiptId);
+            ps.executeUpdate();
+            ps.close();
+
+            ps = con.prepareStatement("DELETE FROM Purchase "
+                    + "WHERE receiptID = ?");
+            ps.setInt(1, this.receiptId);
+            ps.executeUpdate();
+            ps.close();
         } catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
