@@ -95,7 +95,7 @@ public class Purchase
             Item Item = new Item(con, upc);
             ps = con.prepareStatement("SELECT quantity "
                     + "FROM PurchaseItem "
-                    + "WHERE receiptID = ?, upc = ?");
+                    + "WHERE receiptID = ? AND upc = ?");
             ps.setInt(1, this.receiptId);
             ps.setInt(2, Item.getUPC());
             rs = ps.executeQuery();
@@ -105,7 +105,7 @@ public class Purchase
                 if (checkStock(Item, 1) == true)
                 {
                     ps = con.prepareStatement("INSERT INTO PurchaseItem VALUES"
-                            + "(?, ?, 1");
+                            + "(?, ?, 1)");
                     ps.setInt(1, this.receiptId);
                     ps.setInt(2, Item.getUPC());
                     ps.executeUpdate();
@@ -119,7 +119,7 @@ public class Purchase
                 {
                     ps = con.prepareStatement("UPDATE PurchaseItem "
                             + "SET quantity = quantity + 1 "
-                            + "WHERE receiptID = ?, upc = ?");
+                            + "WHERE receiptID = ? AND upc = ?");
                     ps.setInt(1, this.receiptId);
                     ps.setInt(2, Item.getUPC());
                     ps.executeUpdate();
@@ -167,10 +167,15 @@ public class Purchase
     private void calculateSubtotal()
     {
         float subtotal = 0;
-        Object purchaseItems[] = this.purchaseItems.toArray();
-        for (int i = 0; i < this.purchaseItems.size(); i++)
+//        Object purchaseItems[] = this.purchaseItems.toArray();
+//        for (int i = 0; i <= this.purchaseItems.size(); i++)
+//        {
+//            subtotal +=((Item) purchaseItems[i]).getSellPrice();
+//        }
+        
+        for (int i = 0; i < purchaseItems.size(); i++)
         {
-            subtotal = +((Item) purchaseItems[i]).getSellPrice();
+        	subtotal += ((Item)purchaseItems.get(i)).getSellPrice();
         }
         this.subtotal = subtotal;
     }
