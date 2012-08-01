@@ -51,7 +51,7 @@ public class Purchase
 
         try
         {
-            ps = con.prepareCall("SELECT receiptId, date, cardnum, expiry, expectedDate, deliveredDate"
+            ps = con.prepareStatement("SELECT receiptID, purchaseDate, card#, expire, expectedDate, deliveredDate "
                     + "FROM Purchase "
                     + "WHERE receiptID = ?");
             ps.setInt(1, receiptId);
@@ -65,9 +65,12 @@ public class Purchase
                 this.expiry = rs.getInt(4);
                 this.expectedDate = rs.getString(5);
                 this.deliveredDate = rs.getString(6);
-                rs = stmt.executeQuery("SELECT upc, quantity"
-                        + "FROM PurchaseItem"
-                        + "WHERE receiptId = " + receiptId + ";");
+                ps = con.prepareStatement("SELECT upc, quantity " +
+                		"FROM PurchaseItem " +
+                		"WHERE receiptID = ?");
+                ps.setInt(1, receiptId);
+                rs = ps.executeQuery();
+                
                 while (rs.next())
                 {
                     for (int i = 0; i < rs.getInt(2); i++)
