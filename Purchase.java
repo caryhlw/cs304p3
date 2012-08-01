@@ -162,6 +162,11 @@ public class Purchase
         }
     }
 
+    public void checkout (int card, Date expire, int amount)
+    {
+        
+    }
+
     private void calculateSubtotal()
     {
         float subtotal = 0;
