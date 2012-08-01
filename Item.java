@@ -116,7 +116,10 @@ public class Item
     public int getQuantity()
     {
         return quantity;
-
-
+    }
+    
+    public String printItem() {
+    	String toPrint = Integer.toString(upc) + "\t" + title + "\t" + type + "\t" + category + "\t" + company + "\t" + Integer.toString(year) + "\t" + Float.toString(sellPrice) +"\n";
+    	return toPrint;
     }
 }

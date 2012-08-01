@@ -102,7 +102,7 @@ create table Return
 	( retid integer not null PRIMARY KEY,
 	returnDate date not null,
 	receiptID integer not null,
-	name varchar(30) default 'Future Shop',
+	name varchar(30) default 'future shop',
 	foreign key(receiptID) references Purchase );
 
 create table ReturnItem
@@ -116,51 +116,51 @@ create table ReturnItem
 
 
 insert into Item	
-values (upc_counter.nextval, 'OK Computer', 'cd', 'rock', 'Capitol Records', 1997, 10.99, 1000);
+values (upc_counter.nextval, 'ok computer', 'cd', 'rock', 'capitol records', 1997, 10.99, 1000);
 insert into LeadSinger
-values (upc_counter.currval, 'Thom Yorke');
+values (upc_counter.currval, 'thom yorke');
 insert ALL
-into HasSong values (upc_counter.currval, 'Airbag')
-into HasSong values (upc_counter.currval, 'Paranoid Android')
-into HasSong values (upc_counter.currval, 'Subterranean Homesick Alien')
-into HasSong values (upc_counter.currval, 'Exit Music (For a Film)')
-into HasSong values (upc_counter.currval, 'Let Down')
-into HasSong values (upc_counter.currval, 'Karma Police')
-into HasSong values (upc_counter.currval, 'Fitter Happier')
-into HasSong values (upc_counter.currval, 'Electioneering')
-into HasSong values (upc_counter.currval, 'Climbing Up the Walls')
-into HasSong values (upc_counter.currval, 'No Surprises')
-into HasSong values (upc_counter.currval, 'Lucky')
-into HasSong values (upc_counter.currval, 'The Tourist')
+into HasSong values (upc_counter.currval, 'airbag')
+into HasSong values (upc_counter.currval, 'paranoid android')
+into HasSong values (upc_counter.currval, 'subterranean homesick alien')
+into HasSong values (upc_counter.currval, 'exit music (for a film)')
+into HasSong values (upc_counter.currval, 'let down')
+into HasSong values (upc_counter.currval, 'karma police')
+into HasSong values (upc_counter.currval, 'fitter happier')
+into HasSong values (upc_counter.currval, 'electioneering')
+into HasSong values (upc_counter.currval, 'climbing up the walls')
+into HasSong values (upc_counter.currval, 'no surprises')
+into HasSong values (upc_counter.currval, 'lucky')
+into HasSong values (upc_counter.currval, 'the tourist')
 select * from dual;
 
 insert into Item
-values (upc_counter.nextval, 'Teenage Dream', 'cd', 'pop', 'Capitol Records', 2010, 6.99, 50);
+values (upc_counter.nextval, 'teenage dream', 'cd', 'pop', 'capitol records', 2010, 6.99, 50);
 insert into LeadSinger
-values(upc_counter.currval, 'Katy Perry');
+values(upc_counter.currval, 'katy perry');
 
 insert ALL
-into HasSong values (upc_counter.currval, 'Teenage Dream')
-into HasSong values (upc_counter.currval, 'Last Friday Night (T.G.I.F.)')
-into HasSong values (upc_counter.currval, 'California Gurls')
-into HasSong values (upc_counter.currval, 'Firework')
-into HasSong values (upc_counter.currval, 'Peacock')
-into HasSong values (upc_counter.currval, 'Circle the Drain')
-into HasSong values (upc_counter.currval, 'The One That Got Away')
-into HasSong values (upc_counter.currval, 'Who Am I Living For?')
-into HasSong values (upc_counter.currval, 'Pearl')
-into HasSong values (upc_counter.currval, 'Hummingbird Heartbeat')
-into HasSong values (upc_counter.currval, 'Not Like the Movies')
+into HasSong values (upc_counter.currval, 'teenage dream')
+into HasSong values (upc_counter.currval, 'last friday night (t.g.i.f.)')
+into HasSong values (upc_counter.currval, 'california gurls')
+into HasSong values (upc_counter.currval, 'firework')
+into HasSong values (upc_counter.currval, 'peacock')
+into HasSong values (upc_counter.currval, 'circle the drain')
+into HasSong values (upc_counter.currval, 'the one that got away')
+into HasSong values (upc_counter.currval, 'who am i living for?')
+into HasSong values (upc_counter.currval, 'pearl')
+into HasSong values (upc_counter.currval, 'hummingbird heartbeat')
+into HasSong values (upc_counter.currval, 'not like the movies')
 select * from dual;
 
 insert into Item
-values (upc_counter.nextval, 'Kill Bill: Vol. 1', 'dvd', null, 'Miramax Films', 2003, 9.99, 0);
+values (upc_counter.nextval, 'kill bill: vol. 1', 'dvd', null, 'miramax films', 2003, 9.99, 0);
 
 insert ALL
-into Customer values ('blau', 'abc123', 'Brandon Lau', '1428 Bramwell Road', '604-992-2219')
-into Customer values ('cwong', 'qwerty', 'Cary Wong', 'Somewhere in Kerrisdale', '604-123-4567')
-into Customer values ('bigfoig', 'itypeslow', 'Mike Estepho', 'Richmond?', '778-999-9999')
-into Customer values ('akon', 'solonely', 'Akom V', 'Richmond', '778-111-1111')
+into Customer values ('blau', 'abc123', 'brandon lau', '1428 bramwell road', '604-992-2219')
+into Customer values ('cwong', 'qwerty', 'cary wong', 'somewhere in kerrisdale', '604-123-4567')
+into Customer values ('bigfoig', 'itypeslow', 'mike estepho', 'richmond?', '778-999-9999')
+into Customer values ('akon', 'solonely', 'akom v', 'richmond', '778-111-1111')
 select * from dual;
 
 
@@ -174,5 +174,5 @@ insert into Return values (retid_counter.nextval, '29-jun-2011', receipt_counter
 							default);
 insert into ReturnItem values (retid_counter.currval, 100000, 2);
 
-insert into Shipment values (shipment_counter.nextval, 'Big Phat Records', '14-may-2010');
+insert into Shipment values (shipment_counter.nextval, 'big phat records', '14-may-2010');
 insert into ShipItem values (shipment_counter.currval, 100000, 6.99, 100);

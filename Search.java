@@ -40,7 +40,7 @@ public class Search
 
                 retItem.add(new Item(con, rs.getInt(1)));
             }
-
+            System.out.println(Integer.toString(retItem.size()));
             // commit work
             con.commit();
 
@@ -209,5 +209,12 @@ public class Search
     public Item results(int index)
     {
         return retItem.get(index);
+    }
+    
+    public String printResults() {
+    	String temp = "";
+    	for(int i = 0; i < retItem.size(); i++)
+    		temp += results(i).printItem();
+    	return temp;
     }
 }

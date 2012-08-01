@@ -7,12 +7,6 @@ import java.io.*;
 
 
 public class dbConnection {
-	
-	public static void main(String args[])
-	{
-		dbConnection c = new dbConnection();
-		swing gui = new swing(c.con);
-	} 
 
 	private static java.sql.Connection con;
 	private String username;
@@ -76,6 +70,10 @@ public class dbConnection {
 			return false;
 		}
 	
+	}
+	
+	public Connection getConnection() {
+		return con;
 	}
 	
 }

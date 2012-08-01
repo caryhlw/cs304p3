@@ -92,11 +92,25 @@ public class swing extends JFrame {
 		btnCustomer.setBounds(30, 178, 160, 68);
 		contentPane.add(btnCustomer);
 		JButton btnClerk = new JButton("Clerk");
+		btnClerk.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ClerkWindow frame4 = new ClerkWindow();
+				frame4.setVisible(true);
+				setVisible(false);
+			}
+		});
 		btnClerk.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		btnClerk.setBounds(225, 178, 160, 68);
 		contentPane.add(btnClerk);
 		
 		JButton btnManager = new JButton("Manager");
+		btnManager.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				ManagerWindow frame4 = new ManagerWindow();
+				frame4.setVisible(true);
+				setVisible(false);
+			}
+		});
 
 		btnManager.setFont(new Font("Tahoma", Font.PLAIN, 20));
 		btnManager.setBounds(416, 178, 160, 68);
