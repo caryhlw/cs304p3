@@ -9,6 +9,7 @@ public class Return
 
     private ArrayList<Item> returnItems;
     private float subtotal;
+    private int retid;
     private Purchase purchase;
     private java.util.Date date;
     private Statement stmt;
@@ -34,6 +35,11 @@ public class Return
             ps.setDate(1, dt);
             ps.setInt(2, this.purchase.getReceiptId());
             ps.executeUpdate();
+            ps = con.prepareStatement("SELECT retid_counter.currval " +
+            		"FROM dual");
+            rs = ps.executeQuery();
+            rs.next();
+            this.retid = rs.getInt(1);
             ps.close();
         } catch (SQLException ex)
         {
@@ -55,26 +61,26 @@ public class Return
                         Item item = new Item(con, upc);
                         ps = con.prepareStatement("SELECT quantity "
                                 + "FROM ReturnItem "
-                                + "WHERE receiptID = ?, upc = ?");
-                        ps.setInt(1, this.purchase.getReceiptId());
+                                + "WHERE retid = ? AND upc = ?");
+                        ps.setInt(1, retid);
                         ps.setInt(2, item.getUPC());
                         rs = ps.executeQuery();
-                        stmt = con.createStatement();
 
                         if (rs.next() == false)
                         {
                             ps = con.prepareStatement("INSERT INTO ReturnItem VALUES"
-                                    + "(?, ?, 1");
-                            ps.setInt(1, this.purchase.getReceiptId());
+                                    + "(?, ?, 1)");
+                            ps.setInt(1, retid);
                             ps.setInt(2, item.getUPC());
                             ps.executeUpdate();
                             ps.close();
                         } else
                         {
-                            ps = con.prepareStatement("UPDATE PurchaseItem "
+                            ps = con.prepareStatement("UPDATE ReturnItem "
                                     + "SET quantity = quantity + 1 "
-                                    + "WHERE receiptID = ?, upc = ?");
-                            ps.setInt(1, this.purchase.getReceiptId());
+                                    + "WHERE retid = ? AND" +
+                                    " upc = ?");
+                            ps.setInt(1, retid);
                             ps.setInt(2, item.getUPC());
                             ps.executeUpdate();
                             ps.close();
@@ -105,10 +111,10 @@ public class Return
     {
         try
         {
-            ps = con.prepareStatement("UPDATE PurchaseItem "
+            ps = con.prepareStatement("UPDATE ReturnItem "
                     + "SET quantity = quantity - 1 "
-                    + "WHERE receiptID = ?, upc = ?");
-            ps.setInt(1, this.purchase.getReceiptId());
+                    + "WHERE retid = ? AND upc = ?");
+            ps.setInt(1, retid);
             ps.setInt(2, item.getUPC());
             ps.executeUpdate();
             ps.close();
