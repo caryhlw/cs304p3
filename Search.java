@@ -64,9 +64,7 @@ public class Search
     {
         try
         {
-            ps = con.prepareStatement("SELECT upc"
-                    + "FROM Item"
-                    + "WHERE category = ?" + "AND" + "quantity = ?");
+            ps = con.prepareStatement("SELECT upc FROM Item WHERE category = ? AND quantity >= ?");
         
             if (category.length() == 0)
             {
@@ -81,10 +79,10 @@ public class Search
 
             while (rs.next())
             {
-
                 retItem.add(new Item(con, rs.getInt(1)));
             }
-
+            
+            System.out.println(Integer.toString(retItem.size()));
             // commit work
             con.commit();
 
@@ -108,9 +106,7 @@ public class Search
     {
         try
         {
-            ps = con.prepareStatement("SELECT upc"
-                    + "FROM Item I, LeadingSinger L"
-                    + "WHERE I.upc = L.upc AND L.name = ?" + "AND"+"I.quantity = ?");
+            ps = con.prepareStatement("SELECT I.upc FROM Item I, LeadSinger L WHERE I.upc = L.upc AND L.name = ? AND I.quantity >= ?");
 
             if (LeadingSinger.length() == 0)
             {
@@ -152,9 +148,7 @@ public class Search
    {
        try
        {
-           ps = con.prepareStatement("SELECT upc"
-                   + "FROM Item I, LeadingSinger L"
-                   + "WHERE I.upc = L.upc AND L.name = ?" + "AND"+"I.quantity = ?" + "AND I.title = ? AND I.category = ?");
+           ps = con.prepareStatement("SELECT upc FROM Item I, LeadingSinger L WHERE I.upc = L.upc AND L.name = ? AND I.quantity >= ? AND I.title = ? AND I.category = ?");
 
            if (LeadingSinger.length() == 0)
            {
