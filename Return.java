@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 public class Return
 {
 
-    private ArrayList returnItems;
+    private ArrayList<Item> returnItems;
     private float subtotal;
     private Purchase purchase;
     private java.util.Date date;
@@ -15,6 +15,8 @@ public class Return
     private ResultSet rs;
     private Connection con;
     private PreparedStatement ps;
+    
+
 
     public Return(Connection con, int receiptId)
     {
@@ -27,8 +29,8 @@ public class Return
         subtotal = 0;
         try
         {
-            ps = con.prepareStatement("INSERT INTO Return VALUES"
-                    + "(retid_counter.next, ?, ?, null");
+            ps = con.prepareStatement("INSERT INTO Return (retid, returnDate, receiptID) VALUES"
+                    + "(retid_counter.nextval, ?, ?)");
             ps.setDate(1, dt);
             ps.setInt(2, this.purchase.getReceiptId());
             ps.executeUpdate();
@@ -172,4 +174,15 @@ public class Return
             System.out.println("Message: " + ex.getMessage());
         }
     }
+    
+    public ArrayList<Item> getReturnItems()
+    {
+    	return returnItems;
+    }
+    
+    public float getSubtotal()
+    {
+    	return subtotal;
+    }
+   
 }
