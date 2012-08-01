@@ -154,6 +154,7 @@ public class Purchase
                     this.purchaseItems.remove(i);
                 }
             }
+            increaseStock(item);
             calculateSubtotal();
         } catch (SQLException ex)
         {
@@ -172,7 +173,7 @@ public class Purchase
         this.subtotal = subtotal;
     }
 
-    private void decreaseStock(Item item)
+    protected void decreaseStock(Item item)
     {
         try
         {
@@ -188,7 +189,7 @@ public class Purchase
         }
     }
 
-    private void increaseStock(Item item)
+    protected void increaseStock(Item item)
     {
         try
         {
