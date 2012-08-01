@@ -8,11 +8,13 @@ public class Return
 {
 
     private ArrayList returnItems;
+    private float subtotal;
     private Purchase purchase;
     private java.util.Date date;
     private Statement stmt;
     private ResultSet rs;
     private Connection con;
+    private PreparedStatement ps;
 
     public Return(Connection con, int receiptId)
     {
@@ -22,12 +24,15 @@ public class Return
         this.date = new Date();
         long t = date.getTime();
         java.sql.Date dt = new java.sql.Date(t);
-
+        subtotal = 0;
         try
         {
-            stmt = con.createStatement();
-            stmt.executeQuery("INSERT INTO Return VALUES"
-                    + "(retid_counter.nexval, )" + dt + ", " + this.purchase.getReceiptId() + ", null);");
+            ps = con.prepareStatement("INSERT INTO Return VALUES"
+                    + "(retid_counter.next, ?, ?, null");
+            ps.setDate(1, dt);
+            ps.setInt(2, this.purchase.getReceiptId());
+            ps.executeUpdate();
+            ps.close();
         } catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
@@ -36,7 +41,6 @@ public class Return
 
     public void addItem(int upc)
     {
-
         try
         {
             Object purchaseItems[] = purchase.getPurchaseItems().toArray();
@@ -46,23 +50,38 @@ public class Return
                 {
                     try
                     {
-                        Item Item = new Item(con, upc);
+                        Item item = new Item(con, upc);
+                        ps = con.prepareStatement("SELECT quantity "
+                                + "FROM ReturnItem "
+                                + "WHERE receiptID = ?, upc = ?");
+                        ps.setInt(1, this.purchase.getReceiptId());
+                        ps.setInt(2, item.getUPC());
+                        rs = ps.executeQuery();
                         stmt = con.createStatement();
-                        rs = stmt.executeQuery("SELECT quantity"
-                                + "FROM ReturnItem"
-                                + "WHERE receiptId = " + this.purchase.getReceiptId() + ", upc = " + Item.getUPC() + ";");
+
                         if (rs.next() == false)
                         {
-                            stmt.executeUpdate("insert into ReternItem values"
-                                    + "(" + this.purchase.getReceiptId() + "," + Item.getUPC() + ", 1);");
+                            ps = con.prepareStatement("INSERT INTO ReturnItem VALUES"
+                                    + "(?, ?, 1");
+                            ps.setInt(1, this.purchase.getReceiptId());
+                            ps.setInt(2, item.getUPC());
+                            ps.executeUpdate();
+                            ps.close();
                         } else
                         {
-                            stmt.executeUpdate("Update PurchaseItem"
-                                    + "SET quantity = quantity + 1"
-                                    + "WHERE receiptId = " + this.purchase.getReceiptId() + ", upc = " + upc + ";");
+                            ps = con.prepareStatement("UPDATE PurchaseItem "
+                                    + "SET quantity = quantity + 1 "
+                                    + "WHERE receiptID = ?, upc = ?");
+                            ps.setInt(1, this.purchase.getReceiptId());
+                            ps.setInt(2, item.getUPC());
+                            ps.executeUpdate();
+                            ps.close();
                         }
 
-                        returnItems.add(Item);
+                        returnItems.add(item);
+                        increaseStock(item);
+                        calculateSubtotal();
+                        break;
                     } catch (SQLException ex)
                     {
                         System.out.println("Message: " + ex.getMessage());
@@ -72,6 +91,7 @@ public class Return
                     throw new NotFoundException("Item not in original purchase");
                 }
             }
+
         } catch (NotFoundException nf)
         {
             System.out.println(nf.getMessage());
@@ -79,36 +99,28 @@ public class Return
 
     }
 
-    public void removeItem(int upc)
+    public void removeItem(Item item)
     {
         try
         {
-            stmt = con.createStatement();
-            stmt.executeUpdate("Update PurchaseItem"
-                    + "SET quantity = quantity + - 1"
-                    + "WHERE receiptId = " + receiptId + ", upc = " + item.getUPC() + ";");
-            Object purchaseItems[] = this.purchaseItems.toArray();
+            ps = con.prepareStatement("UPDATE PurchaseItem "
+                    + "SET quantity = quantity - 1 "
+                    + "WHERE receiptID = ?, upc = ?");
+            ps.setInt(1, this.purchase.getReceiptId());
+            ps.setInt(2, item.getUPC());
+            ps.executeUpdate();
+            ps.close();
+            Object purchaseItems[] = this.returnItems.toArray();
 
-
-
-
-            for (int i = 0; i
-                    < this.purchaseItems.size(); i++)
+            for (int i = 0; i < this.returnItems.size(); i++)
             {
                 if (((Item) purchaseItems[i]).getUPC() == item.getUPC())
                 {
-                    this.purchaseItems.remove(i);
-
-
-
-
+                    this.returnItems.remove(i);
                 }
             }
-            this.subtotal = subtotal;
-
-
-
-
+            increaseStock(item);
+            calculateSubtotal();
         } catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
@@ -117,3 +129,47 @@ public class Return
         }
 
     }
+
+    private void calculateSubtotal()
+    {
+        float subtotal = 0;
+        Object purchaseItems[] = this.returnItems.toArray();
+        for (int i = 0; i < this.returnItems.size(); i++)
+        {
+            subtotal = +((Item) purchaseItems[i]).getSellPrice();
+        }
+        this.subtotal = subtotal;
+    }
+
+    protected void decreaseStock(Item item)
+    {
+        try
+        {
+            ps = con.prepareStatement("UPDATE Item "
+                    + "SET quantity = quantity - 1 "
+                    + "WHERE upc = ?");
+            ps.setInt(1, item.getUPC());
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
+    }
+
+    protected void increaseStock(Item item)
+    {
+        try
+        {
+            ps = con.prepareStatement("UPDATE Item "
+                    + "SET quantity = quantity + 1 "
+                    + "WHERE upc = ?");
+            ps.setInt(1, item.getUPC());
+            ps.executeUpdate();
+            ps.close();
+        } catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
+    }
+}
