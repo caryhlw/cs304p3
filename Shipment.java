@@ -6,21 +6,24 @@ import java.text.SimpleDateFormat;
 
 public class Shipment
 {
-    private ArrayList shipItems;
-    private int sid;
-    private String supName;
-    private Date date;
-    private Statement stmt;
-    private ResultSet rs;
-    private Connection con;
-    private PreparedStatement ps;
 
-    public Shipment(Connection con, String supName)
-    {
-        this.con = con;
-        this.supName = supName;
-        this.shipItems = new ArrayList();
-        this.date = new Date();
+	private int sid;
+	private String supName;
+	private Date date;
+	private ArrayList <int> shipItems;
+	private Connection con;
+	private Statement stmt;
+	private ResultSet rs;
+	private PreparedStatement ps;
+	
+	public Shipment (Connection con, int sid, String supName, int firstItemUPC)
+	{
+		this.con = con;
+		this.sid = sid;
+		this.supName = supName;
+		shipItems = new ArrayList<int>(1);
+		shipItems.set(0, firstItemUPC);
+		this.date = new Date();
         long t = date.getTime();
         java.sql.Date dt = new java.sql.Date(t);
         try
@@ -34,20 +37,76 @@ public class Shipment
         {
             System.out.println("Message: " + ex.getMessage());
         }
-    }
+	}
+	
+	public void addItem( int UPC ){
+		
+		try{
+		ps = con.prepareStatement("SELECT  title, type, category, company, year, sellPrice, quantity"
+				+ "FROM Item"
+				+ "WHERE upc = ?");
+		ps.setInt(1,UPC);
+		rs = ps.executeQuery();
+		while (rs.next())
+        {
 
-    int getSid()
+            retItem.add(new Item(con, rs.getInt(1)));
+        }
+		con.commit();
+
+        ps.close();
+		}catch (SQLException ex)
+	       {
+	           System.out.println("Message: " + ex.getMessage());
+	           try
+	           {
+	               // undo the insert
+	               con.rollback();
+	           } catch (SQLException ex2)
+	           {
+	               System.out.println("Message: " + ex2.getMessage());
+	               System.exit(-1);
+	           }
+	       }
+	}
+	
+	public void setSupName(String supName){
+		try{
+		this.supName = supName;
+		ps = con.prepareStatement("Update Into Shipment set supName = ?"
+				+ "WHERE sid = "+ sid);
+		ps.setString(1, supName);
+		ps.executeUpdate();
+		con.commit();
+		ps.close();
+		con.close();
+	}catch(SQLException ex) {
+        System.out.println("Message: " + ex.getMessage());
+        try
+        {
+            // undo the insert
+            con.rollback();
+        } catch (SQLException ex2)
+        {
+            System.out.println("Message: " + ex2.getMessage());
+            System.exit(-1);
+        }
+    	}
+		
+	}
+	
+	public int getSid()
     {
         return sid;
     }
-
-    String getSupName()
+    public String getSupName()
     {
         return supName;
     }
 
-    String getSDate()
+    public Date getDate()
     {
-        return sdate;
+        return date;
     }
 }
+
