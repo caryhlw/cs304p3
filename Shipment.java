@@ -38,34 +38,50 @@ public class Shipment
             System.out.println("Message: " + ex.getMessage());
         }
 	}
-
-    int getSid()
-    {
-        return sid;
-    }
-
 	
 	public void addItem( int UPC ){
+		
+		try{
 		ps = con.prepareStatement("SELECT  title, type, category, company, year, sellPrice, quantity"
 				+ "FROM Item"
 				+ "WHERE upc = ?");
 		ps.setInt(1,UPC);
+		rs = ps.executeQuery();
 		while (rs.next())
         {
 
             retItem.add(new Item(con, rs.getInt(1)));
         }
+		con.commit();
+
+        ps.close();
+		}catch (SQLException ex)
+	       {
+	           System.out.println("Message: " + ex.getMessage());
+	           try
+	           {
+	               // undo the insert
+	               con.rollback();
+	           } catch (SQLException ex2)
+	           {
+	               System.out.println("Message: " + ex2.getMessage());
+	               System.exit(-1);
+	           }
+	       }
 	}
 	
-	
-    String getSupName()
+	public int getSid()
+    {
+        return sid;
+    }
+    public String getSupName()
     {
         return supName;
     }
 
-    String getSDate()
+    public String getSDate()
     {
         return sdate;
     }
 }
->>>>>>> 9c248c4aae2b8cdc454311ad76ac2555d847a7d9
+
