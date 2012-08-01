@@ -177,6 +177,7 @@ public class Purchase
             ps.setInt(1, card);
             ps.setDate(2, dt);
             ps.setInt(3, receiptId);
+            calculateChange(amount);
         } catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
