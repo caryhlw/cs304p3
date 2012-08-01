@@ -12,6 +12,8 @@ public class Customer
     private Connection con;
     private Statement stmt;
     private PreparedStatement ps;
+    
+    private Boolean existFlag = false;
 
     public Customer(Connection con, String customerId, String password, String name, String address, String phone)
     {
@@ -141,12 +143,14 @@ public class Customer
             int rowCount = rs.getInt(1);
             if (rowCount != 0)
             {
-                return true;
+            	existFlag = true;
             } else
             {
             	//System.out.println("User does not exist \n");
-                return false;
+                existFlag = false;
             }
+            
+            return existFlag;
         } catch (SQLException ex)
         {
             System.out.println("cid not found. Message: " + ex.getMessage());
