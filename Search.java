@@ -31,7 +31,7 @@ public class Search
                 ps.setString(1, null);
             } else
             {
-                ps.setString(1, title);
+                ps.setString(1, title.toLowerCase());
             }
             ps.setInt(2, quantity);
             //maybe catch negative number exception
@@ -75,7 +75,7 @@ public class Search
                 ps.setString(1, null);
             } else
             {
-                ps.setString(1, category);
+                ps.setString(1, category.toLowerCase());
             }
             ps.setInt(2, quantity);
             
@@ -119,7 +119,7 @@ public class Search
                 ps.setString(1, null);
             } else
             {
-                ps.setString(1, LeadingSinger);
+                ps.setString(1, LeadingSinger.toLowerCase());
             }
             ps.setInt(2, quantity);
             rs = ps.executeQuery();
@@ -163,7 +163,7 @@ public class Search
                ps.setString(1, null);
            } else
            {
-               ps.setString(1, LeadingSinger);
+               ps.setString(1, LeadingSinger.toLowerCase());
            }
            	ps.setInt(2, quantity);
            if (title.length() == 0)
@@ -171,14 +171,14 @@ public class Search
                ps.setString(3, null);
            } else
            {
-               ps.setString(3, title);
+               ps.setString(3, title.toLowerCase());
            }
            if (category.length() == 0)
            {
                ps.setString(4, null);
            } else
            {
-               ps.setString(4, category);
+               ps.setString(4, category.toLowerCase());
            }
            rs = ps.executeQuery();
 

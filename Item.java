@@ -18,10 +18,10 @@ public class Item
     public Item(int upc, String title, String type, String category, String company, int year, float sellPrice)
     {
         this.upc = upc;
-        this.title = title;
-        this.type = type;
-        this.category = category;
-        this.company = company;
+        this.title = title.toLowerCase();
+        this.type = type.toLowerCase();
+        this.category = category.toLowerCase();
+        this.company = company.toLowerCase();
         this.year = year;
         this.sellPrice = sellPrice;
     }

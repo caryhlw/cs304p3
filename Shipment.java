@@ -20,7 +20,7 @@ public class Shipment
 	{
 		this.con = con;
 		this.sid = sid;
-		this.supName = supName;
+		this.supName = supName.toLowerCase();
 		shipItems = new ArrayList<Item>(0);
 		shipItems.add(new Item(con, firstItemUPC));
 		this.date = new Date();
@@ -47,10 +47,10 @@ public class Shipment
 	
 	public void setSupName(String supName){
 		try{
-		this.supName = supName;
+		this.supName = supName.toLowerCase();
 		ps = con.prepareStatement("Update Into Shipment set supName = ?"
 				+ "WHERE sid = "+ sid);
-		ps.setString(1, supName);
+		ps.setString(1, supName.toLowerCase());
 		ps.executeUpdate();
 		con.commit();
 		ps.close();
