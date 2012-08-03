@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+import java.sql.*;
 import java.awt.Component;
 import java.awt.FlowLayout;
 
@@ -29,24 +30,18 @@ public class NewCustomerAccount extends JDialog {
 	private JLabel lblPassword;
 	private JButton btnSubmit;
 	private JButton btnHOME;
+	private Connection con;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			NewCustomerAccount dialog = new NewCustomerAccount();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+
 
 	/**
 	 * Create the dialog.
 	 */
-	public NewCustomerAccount() {
+	public NewCustomerAccount(Connection c) {
+		con = c;
 		setBounds(100, 100, 622, 470);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -129,7 +124,7 @@ public class NewCustomerAccount extends JDialog {
 			btnHOME = new JButton("BACK");
 			btnHOME.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
-					swing frame = new swing();
+					swing frame = new swing(con);
 					frame.setVisible(true);
 					setVisible(false);
 				}

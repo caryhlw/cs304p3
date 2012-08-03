@@ -1,4 +1,5 @@
 import java.awt.BorderLayout;
+
 import java.awt.FlowLayout;
 
 import javax.swing.JButton;
@@ -14,7 +15,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.List;
 import javax.swing.JTextField;
-
+import java.sql.*;
 
 public class Database extends JDialog {
 
@@ -23,24 +24,23 @@ public class Database extends JDialog {
 	private JTextField textField_1;
 	private JTextField textField_2;
 	private JTextField textField_3;
-
+	private Connection con;
+	private Boolean empty1;
+	private Boolean empty2;
+	private Boolean empty3;
+	private Boolean empty4;
+	private int quantity;
+	JLabel resultLabel = new JLabel("hello");
+	
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		try {
-			Database dialog = new Database();
-			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-			dialog.setVisible(true);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 	/**
 	 * Create the dialog.
 	 */
-	public Database() {
+	public Database(Connection c) {
+		con = c;
 		setBounds(100, 100, 622, 470);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -55,7 +55,7 @@ public class Database extends JDialog {
 		JButton btnHome = new JButton("HOME");
 		btnHome.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				swing frame = new swing();
+				swing frame = new swing(con);
 				frame.setVisible(true);
 				setVisible(false);
 			}
@@ -63,11 +63,11 @@ public class Database extends JDialog {
 		btnHome.setBounds(10, 9, 89, 23);
 		contentPanel.add(btnHome);
 		
-		JLabel lblCategory = new JLabel("Category:");
+		JLabel lblCategory = new JLabel("Title:");
 		lblCategory.setBounds(89, 99, 62, 14);
 		contentPanel.add(lblCategory);
 		
-		JLabel lblTitle = new JLabel("Title:");
+		JLabel lblTitle = new JLabel("Category:");
 		lblTitle.setBounds(89, 130, 62, 14);
 		contentPanel.add(lblTitle);
 		
@@ -100,8 +100,34 @@ public class Database extends JDialog {
 		contentPanel.add(textField_3);
 		
 		JButton btnSubmit = new JButton("SUBMIT");
+		btnSubmit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Search s = new Search(con);
+				if(textField.getText().equals("")) empty1 = true; else empty1 = false;
+				if(textField_1.getText().equals("")) empty2 = true; else empty2 = false;
+				if(textField_2.getText().equals("")) empty3 = true; else empty3 = false;
+				if(textField_3.getText().equals("")) {
+					empty4 = true;
+					quantity = 0;
+				} else {
+					empty4 = false;
+					quantity = Integer.parseInt(textField_3.getText());
+				}
+				
+				if(empty1 == false && empty2 == true && empty3 == true && empty4 == false) s.searchTitle(textField.getText(), quantity);
+				else if(empty1 == true && empty2 == false && empty3 == true && empty4 == false) s.searchCategory(textField_1.getText(), quantity);
+				else if(empty1 == true && empty2 == true && empty3 == false && empty4 == false) s.searchLeadSinger(textField_2.getText(), quantity);
+				else if(empty1 == false && empty2 == false && empty3 == false && empty4 == false) s.searchAll(textField.getText(),textField_1.getText(),textField_2.getText(), quantity);
+				System.out.println(s.printResults());
+				resultLabel.setText(s.printResults());
+			}
+		});
 		btnSubmit.setBounds(172, 217, 89, 23);
 		contentPanel.add(btnSubmit);
+		
+	
+		resultLabel.setBounds(10,263,586,158);
+		contentPanel.add(resultLabel);
 		
 		/*String[] categoryStrings = {"Rock", "Pop", "HipHop", "R&B", "Indie", "Country"};
 		JComboBox categoryList = new JComboBox(categoryStrings);
