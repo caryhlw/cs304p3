@@ -1,4 +1,3 @@
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -32,6 +31,32 @@ public class Purchase
             ps = con.prepareStatement("INSERT INTO Purchase VALUES"
                     + "(receipt_counter.nextval, ?, null, null, null, null, null)");
             ps.setDate(1, dt);
+            ps.executeUpdate();
+            ps = con.prepareStatement("SELECT receipt_counter.currval "
+                    + "FROM dual");
+            rs = ps.executeQuery();
+            rs.next();
+            this.receiptId = rs.getInt(1);
+            ps.close();
+
+        } catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
+    }
+        public Purchase(Connection con, String customerID)
+    {
+        this.con = con;
+        this.purchaseItems = new ArrayList<Item>();
+        this.date = new Date();
+        long t = date.getTime();
+        java.sql.Date dt = new java.sql.Date(t);
+        try
+        {
+            ps = con.prepareStatement("INSERT INTO Purchase VALUES"
+                    + "(receipt_counter.nextval, ?, ?, null, null, null, null)");
+            ps.setDate(1, dt);
+            ps.setString(2, customerID);
             ps.executeUpdate();
             ps = con.prepareStatement("SELECT receipt_counter.currval "
                     + "FROM dual");
