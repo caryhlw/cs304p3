@@ -73,7 +73,7 @@ public class Purchase
         }
     }
 
-    public Purchase(Connection con, int receiptId)
+    public Purchase(Connection con, int receiptId) throws NotFoundException
     {
         this.purchaseItems = new ArrayList<Item>();
 
@@ -108,7 +108,7 @@ public class Purchase
                 }
             } else
             {
-                throw new SQLException("ReceiptId not found");
+                throw new NotFoundException("ReceiptID not found");
             }
         } catch (SQLException ex)
         {
