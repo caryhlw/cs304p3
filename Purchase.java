@@ -1,3 +1,4 @@
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -44,7 +45,8 @@ public class Purchase
             System.out.println("Message: " + ex.getMessage());
         }
     }
-        public Purchase(Connection con, String customerID)
+
+    public Purchase(Connection con, String customerID)
     {
         this.con = con;
         this.purchaseItems = new ArrayList<Item>();
@@ -289,6 +291,11 @@ public class Purchase
             ps.setInt(1, this.receiptId);
             ps.executeUpdate();
             ps.close();
+
+            for (int i = 0; i < purchaseItems.size(); i++)
+            {
+                increaseStock(purchaseItems.get(i));
+            }
         } catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
