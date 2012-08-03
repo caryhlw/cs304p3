@@ -2,7 +2,6 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
-import java.text.SimpleDateFormat;
 
 public class Return
 {
@@ -12,34 +11,42 @@ public class Return
     private int retid;
     private Purchase purchase;
     private java.util.Date date;
-    private Statement stmt;
     private ResultSet rs;
     private Connection con;
     private PreparedStatement ps;
 
     public Return(Connection con, int receiptId)
     {
-        this.con = con;
-        this.purchase = new Purchase(con, receiptId);
-        this.returnItems = new ArrayList();
-        this.date = new Date();
-        long t = date.getTime();
-        java.sql.Date dt = new java.sql.Date(t);
-        subtotal = 0;
         try
         {
-            ps = con.prepareStatement("INSERT INTO Return (retid, returnDate, receiptID) VALUES"
-                    + "(retid_counter.nextval, ?, ?)");
-            ps.setDate(1, dt);
-            ps.setInt(2, this.purchase.getReceiptId());
-            ps.executeUpdate();
-            ps = con.prepareStatement("SELECT retid_counter.currval "
-                    + "FROM dual");
-            rs = ps.executeQuery();
-            rs.next();
-            this.retid = rs.getInt(1);
-            ps.close();
-        } catch (SQLException ex)
+            this.con = con;
+            this.purchase = new Purchase(con, receiptId);
+            if (this.purchase.getReceiptId() == 0)
+            {
+                this.returnItems = new ArrayList();
+            }
+            this.date = new Date();
+            long t = date.getTime();
+            java.sql.Date dt = new java.sql.Date(t);
+            subtotal = 0;
+            try
+            {
+                ps = con.prepareStatement("INSERT INTO Return (retid, returnDate, receiptID) VALUES"
+                        + "(retid_counter.nextval, ?, ?)");
+                ps.setDate(1, dt);
+                ps.setInt(2, this.purchase.getReceiptId());
+                ps.executeUpdate();
+                ps = con.prepareStatement("SELECT retid_counter.currval "
+                        + "FROM dual");
+                rs = ps.executeQuery();
+                rs.next();
+                this.retid = rs.getInt(1);
+                ps.close();
+            } catch (SQLException ex)
+            {
+                System.out.println("Message: " + ex.getMessage());
+            }
+        } catch (NotFoundException ex)
         {
             System.out.println("Message: " + ex.getMessage());
         }
@@ -126,8 +133,7 @@ public class Return
                 ps.setInt(2, item.getUPC());
                 ps.executeUpdate();
                 ps.close();
-            }
-            else
+            } else
             {
                 ps = con.prepareStatement("DELETE FROM ReturnItem "
                         + "WHERE retid = ? AND upc = ?");
@@ -156,7 +162,7 @@ public class Return
         }
     }
 
-        public void Cancel()
+    public void Cancel()
     {
         try
         {
@@ -171,6 +177,11 @@ public class Return
             ps.setInt(1, retid);
             ps.executeUpdate();
             ps.close();
+
+            for (int i = 0; i < returnItems.size(); i++)
+            {
+                decreaseStock(returnItems.get(i));
+            }
         } catch (SQLException ex)
         {
             System.out.println("Message: " + ex.getMessage());
