@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 
 public class Shipment
 {
+
     private int sid;
     private String supName;
     private Date date;
@@ -28,6 +29,12 @@ public class Shipment
                     + "(shipment_counter.next, ?, ?)");
             ps.setString(1, this.supName);
             ps.setDate(2, dt);
+            ps = con.prepareStatement("SELECT shipment_counter.currval "
+                    + "FROM dual");
+            rs = ps.executeQuery();
+            rs.next();
+            this.sid = rs.getInt(1);
+            ps.close();
 
         } catch (SQLException ex)
         {
@@ -37,7 +44,42 @@ public class Shipment
 
     public void addItem(int UPC)
     {
-        shipItems.add(new Item(con, UPC));
+        try
+        {
+            Item Item = new Item(con, UPC);
+            ps = con.prepareStatement("SELECT quantity "
+                    + "FROM ShipItem "
+                    + "WHERE sid = ? AND upc = ?");
+            ps.setInt(1, this.sid);
+            ps.setInt(2, Item.getUPC());
+            rs = ps.executeQuery();
+
+            if (rs.next() == false)
+            {
+                ps = con.prepareStatement("INSERT INTO ShipItem VALUES"
+                        + "(?, ?, 1)");
+                ps.setInt(1, this.sid);
+                ps.setInt(2, Item.getUPC());
+                ps.executeUpdate();
+                ps.close();
+                shipItems.add(Item);
+                addStock(Item);
+            } else
+            {
+                ps = con.prepareStatement("UPDATE ShipItem "
+                        + "SET quantity = quantity + 1 "
+                        + "WHERE sid = ? AND upc = ?");
+                ps.setInt(1, this.sid);
+                ps.setInt(2, Item.getUPC());
+                ps.executeUpdate();
+                ps.close();
+                shipItems.add(Item);
+                addStock(Item);
+            }
+        } catch (SQLException ex)
+        {
+            System.out.println("Message: " + ex.getMessage());
+        }
     }
 
     public void setSupName(String supName)
